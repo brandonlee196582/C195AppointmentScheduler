@@ -23,6 +23,7 @@ public class Appointment {
         this.aptLocation = aptLocation;
         this.aptType = aptType;
         this.aptStartDateTime = aptStartDateTime;
+        this.aptEndDateTime = aptEndDateTime;
         this.aptCreationDate = aptCreationDate;
         this.aptCreatedBy = aptCreatedBy;
         this.aptLastUpdatedDate = aptLastUpdatedDate;
@@ -45,6 +46,8 @@ public class Appointment {
     public void setAptType() {this.aptType = aptType;}
     public Date getAptStartDateTime() {return aptStartDateTime;}
     public void setAptStartDateTime(Date aptStartDateTime) {this.aptStartDateTime = aptStartDateTime;}
+    public Date getAptEndDateTime() {return aptEndDateTime;}
+    public void setAptEndDateTime(Date aptEndDateTime) {this.aptEndDateTime = aptEndDateTime;}
     public Date getAptCreationDate() {return aptCreationDate;}
     public void setAptCreationDate(Date aptCreationDate) {this.aptCreationDate = aptCreationDate;}
     public String getAptCreatedBy() {return aptCreatedBy;}
@@ -73,11 +76,9 @@ public class Appointment {
     }
 
     public static int insertApt(int aptId, String aptTitle, String aptDescription, String aptLocation, String aptType, Date aptStartDateTime, Date aptEndDateTime, Date aptCreationDate, String aptCreatedBy, Date aptLastUpdatedDate, String aptlastUpdatedBy, Integer customerId, Integer userId, Integer contactId) throws SQLException {
-
-        //Last_Update"),rs.getString("Last_Updated_By"),rs.getInt("Customer_ID"),rs.getInt("User_ID"),rs.getInt("Contact_ID")
         String sql = "INSERT INTO customers (Title, Description, Location, Type, Start, End, Create_Date, Created_By, Last_Update, Last_Updated_By, Customer_ID, User_ID, Contact_ID) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         PreparedStatement ps = connection.prepareStatement(sql);
-        ps.setString(1, aptTitle)
+        ps.setString(1, aptTitle);
         ps.setString(2, aptDescription);
         ps.setString(3, aptLocation);
         ps.setString(4, aptType);
