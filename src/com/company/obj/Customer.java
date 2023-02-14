@@ -38,7 +38,7 @@ public class Customer {
 
     public static void getDatabaseCustomers(String table, String[] outColumns) throws SQLException {
         String sql;
-        
+
         sql = "SELECT * FROM client_schedule." + table;
         PreparedStatement ps = connection.prepareStatement(sql, ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE);
         ResultSet rs = ps.executeQuery();
