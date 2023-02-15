@@ -1,6 +1,4 @@
-package dbConnection;
-
-import com.company.obj.Customer;
+package com.C195.helper;
 
 import java.sql.*;
 
@@ -12,11 +10,11 @@ public abstract class JDBC {
     private static final String databaseName = "client_schedule";
     private static final String jdbcUrl = protocol + vendor + location + databaseName + "?connectionTimeZone = SERVER"; // LOCAL
     private static final String driver = "com.mysql.cj.jdbc.Driver"; // Driver reference
-    private static final String userName = "sqlUser"; // Username
-    private static String password = "Passw0rd!"; // Password
+    //private static final String userName = "sqlUser"; // Username
+    //private static String password = "Passw0rd!"; // Password
     public static Connection connection;  // Connection Interface
 
-    public static void openConnection()
+    public static String openConnection(String userName,String password)
     {
         try {
             Class.forName(driver); // Locate Driver
@@ -24,8 +22,9 @@ public abstract class JDBC {
         }
         catch(Exception e)
         {
-            System.out.println("Error:" + e.getMessage());
+            return e.getMessage();
         }
+        return "";
     }
 
     public static void closeConnection() {

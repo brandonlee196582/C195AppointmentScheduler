@@ -1,6 +1,5 @@
-package com.company.obj;
+package com.C195.Model;
 
-import dbConnection.JDBC;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
@@ -8,7 +7,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import static dbConnection.JDBC.connection;
+import static com.C195.helper.JDBC.connection;
 
 public class Customer {
     private int customerId;
@@ -44,7 +43,7 @@ public class Customer {
         ResultSet rs = ps.executeQuery();
 
         while(rs.next()){
-            Customer.addCustomer(new com.company.obj.Customer(rs.getInt("Customer_ID"),rs.getString("Customer_Name"),rs.getString("Address"),rs.getString("Postal_Code"),rs.getString("Phone")));
+            Customer.addCustomer(new com.C195.Model.Customer(rs.getInt("Customer_ID"),rs.getString("Customer_Name"),rs.getString("Address"),rs.getString("Postal_Code"),rs.getString("Phone")));
         }
     }
 

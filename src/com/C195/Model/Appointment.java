@@ -1,4 +1,4 @@
-package com.company.obj;
+package com.C195.Model;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -8,7 +8,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Date;
 
-import static dbConnection.JDBC.connection;
+import static com.C195.helper.JDBC.connection;
 
 public class Appointment {
     private int aptId, customerId, userId, contactId;
@@ -63,7 +63,7 @@ public class Appointment {
     public int getContactId() {return contactId;}
     public void setContactId(int contactId) {this.contactId = contactId;}
 
-    public static void getDatabaseApts(String[] outColumns) throws SQLException {
+    public static void getDatabaseApts() throws SQLException {
         String sql;
 
         sql = "SELECT * FROM client_schedule.appointments";
@@ -71,7 +71,8 @@ public class Appointment {
         ResultSet rs = ps.executeQuery();
 
         while(rs.next()){
-            Appointment.addApt(new Appointment(rs.getInt("Appointment_ID"),rs.getString("Title"),rs.getString("Description"),rs.getString("Location"),rs.getString("Type"),rs.getDate("Start"),rs.getDate("End"),rs.getDate("Create_Date"),rs.getString("Created_By"),rs.getDate("Last_Update"),rs.getString("Last_Updated_By"),rs.getInt("Customer_ID"),rs.getInt("User_ID"),rs.getInt("Contact_ID")));
+            System.out.println();
+            Appointment.addApt(new Appointment(rs.getInt("Appointment_ID"),rs.getString("Title"),rs.getString("Description"),rs.getString("Location"),rs.getString("Type"),rs.getTimestamp("Start"),rs.getTimestamp("End"),rs.getTimestamp("Create_Date"),rs.getString("Created_By"),rs.getTimestamp("Last_Update"),rs.getString("Last_Updated_By"),rs.getInt("Customer_ID"),rs.getInt("User_ID"),rs.getInt("Contact_ID")));
         }
     }
 
