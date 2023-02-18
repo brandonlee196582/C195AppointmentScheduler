@@ -1,99 +1,275 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.Group?>
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.DatePicker?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.Spinner?>
 <?import javafx.scene.control.Tab?>
 <?import javafx.scene.control.TabPane?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextArea?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.shape.Line?>
 <?import javafx.scene.shape.Rectangle?>
 <?import javafx.scene.text.Font?>
 
-<VBox prefHeight="350.0" prefWidth="640.0" style="-fx-focus-color: transparent;" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.C195.control.MainWindowController">
+<VBox prefHeight="500.0" prefWidth="950.0" style="-fx-focus-color: transparent;" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.C195.control.MainWindowController">
   <children>
-      <StackPane prefHeight="150.0" prefWidth="200.0">
+      <StackPane alignment="TOP_RIGHT" prefHeight="150.0" prefWidth="200.0">
          <children>
-          <AnchorPane fx:id="tableViews" disable="true" maxHeight="-1.0" maxWidth="-1.0" prefHeight="-1.0" prefWidth="-1.0">
+          <AnchorPane fx:id="tableViews" disable="true" maxHeight="-1.0" maxWidth="-1.0" prefWidth="954.0">
             <children>
-                  <TabPane layoutX="-2.0" prefHeight="367.0" prefWidth="646.0" tabClosingPolicy="UNAVAILABLE">
+                  <TabPane layoutX="-2.0" prefHeight="500.0" prefWidth="956.0" tabClosingPolicy="UNAVAILABLE">
                     <tabs>
-                      <Tab style="-fx-background-radius: 0;" text="Appointments">
+                      <Tab fx:id="aptTabLabel" style="-fx-background-radius: 0;" text="Appointments">
                         <content>
                           <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="322.0" prefWidth="646.0">
                                  <children>
-                                    <TableView fx:id="aptTableView" layoutX="5.0" prefHeight="300.0" prefWidth="638.0">
+                                    <TableView fx:id="aptTableView" layoutX="5.0" prefHeight="435.0" prefWidth="947.0">
                                       <columns>
-                                          <TableColumn fx:id="aptIDColumn" prefWidth="105.0" text="Appointment ID" />
-                                          <TableColumn fx:id="aptTitleColumn" minWidth="0.0" prefWidth="157.0" text="Title" />
-                                          <TableColumn fx:id="aptLocationColumn" prefWidth="107.0" text="Location" />
-                                          <TableColumn fx:id="aptStartColumn" prefWidth="130.0" text="Start" />
-                                          <TableColumn fx:id="aptEndColumn" prefWidth="137.0" text="End" />
+                                          <TableColumn fx:id="aptIDColumn" prefWidth="32.0" text="ID" />
+                                          <TableColumn fx:id="aptTitleColumn" minWidth="0.0" prefWidth="96.0" text="Title" />
+                                          <TableColumn fx:id="aptDescriptionColumn" minWidth="0.0" prefWidth="96.0" text="Description" />
+                                          <TableColumn fx:id="aptLocationColumn" minWidth="0.0" prefWidth="76.0" text="Location" />
+                                          <TableColumn fx:id="aptContactColumn" minWidth="0.0" prefWidth="107.0" text="Contact" />
+                                          <TableColumn fx:id="aptTypeColumn" prefWidth="90.0" text="Type" />
+                                          <TableColumn fx:id="aptStartColumn" prefWidth="150.0" text="Start" />
+                                          <TableColumn fx:id="aptEndColumn" prefWidth="150.0" text="End" />
+                                          <TableColumn fx:id="aptCustomerIdColumn" prefWidth="69.0" text="Customer#" />
+                                          <TableColumn fx:id="aptUserIdColumn" prefWidth="78.0" text="User#" />
                                       </columns>
                                     </TableView>
-                                    <Button layoutX="7.0" layoutY="306.0" mnemonicParsing="false" style="-fx-background-radius: 0;" text="Add" />
-                                    <Button layoutX="50.0" layoutY="306.0" mnemonicParsing="false" style="-fx-background-radius: 0;" text="Update" />
-                                    <Button layoutX="110.0" layoutY="306.0" mnemonicParsing="false" style="-fx-background-radius: 0;" text="Remove" />
+                                    <Button fx:id="aptAddButton" layoutX="7.0" layoutY="441.0" mnemonicParsing="false" onAction="#addAptButtonClicked" style="-fx-background-radius: 0;" text="Add" />
+                                    <Button fx:id="aptUpdateButton" layoutX="50.0" layoutY="441.0" mnemonicParsing="false" onAction="#updateAptButtonClicked" style="-fx-background-radius: 0;" text="Update" />
+                                    <Button fx:id="aptRemoveButton" layoutX="110.0" layoutY="441.0" mnemonicParsing="false" onAction="#removeAptButtonClicked" style="-fx-background-radius: 0;" text="Remove" />
+                                    <AnchorPane layoutX="896.0" layoutY="304.0" maxHeight="25.0" maxWidth="55.0" minHeight="0.0" minWidth="0.0" prefHeight="25.0" prefWidth="55.0" />
                                  </children>
                               </AnchorPane>
                         </content>
                       </Tab>
-                      <Tab style="-fx-background-radius: 0;" text="Customers">
+                      <Tab fx:id="customerTabLabel" style="-fx-background-radius: 0;" text="Customers">
                         <content>
                           <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                                  <children>
-                                    <TableView fx:id="customerTableView" layoutX="5.0" prefHeight="300.0" prefWidth="638.0">
+                                    <TableView fx:id="customerTableView" layoutX="5.0" prefHeight="435.0" prefWidth="947.0">
                                       <columns>
                                           <TableColumn fx:id="customerIDColumn" prefWidth="107.0" text="Customer ID" />
                                           <TableColumn fx:id="customerNameColumn" prefWidth="138.0" text="Customer Name" />
-                                          <TableColumn fx:id="addressColumn" prefWidth="145.0" text="Address" />
-                                          <TableColumn fx:id="PostalCodeColumn" prefWidth="99.0" text="Postal Code" />
+                                          <TableColumn fx:id="addressColumn" prefWidth="154.0" text="Address" />
+                                          <TableColumn fx:id="divisionColumn" prefWidth="154.0" text="Division" />
+                                          <TableColumn fx:id="countryColumn" prefWidth="154.0" text="Country" />
+                                          <TableColumn fx:id="PostalCodeColumn" minWidth="0.0" prefWidth="90.0" text="Postal Code" />
                                           <TableColumn fx:id="PhoneColumn" prefWidth="147.0" text="Phone Number" />
                                       </columns>
                                     </TableView>
-                                    <Button layoutX="7.0" layoutY="306.0" mnemonicParsing="false" style="-fx-background-radius: 0;" text="Add" />
-                                    <Button layoutX="50.0" layoutY="306.0" mnemonicParsing="false" style="-fx-background-radius: 0;" text="Update" />
-                                    <Button layoutX="110.0" layoutY="306.0" mnemonicParsing="false" style="-fx-background-radius: 0;" text="Remove" />
+                                    <Button fx:id="customerAddButton" layoutX="7.0" layoutY="441.0" mnemonicParsing="false" onAction="#addCustomerButtonClicked" style="-fx-background-radius: 0;" text="Add" />
+                                    <Button fx:id="customerUpdateButton" layoutX="50.0" layoutY="441.0" mnemonicParsing="false" onAction="#updateCustomerButtonClicked" style="-fx-background-radius: 0;" text="Update" />
+                                    <Button fx:id="customerRemoveButton" layoutX="110.0" layoutY="441.0" mnemonicParsing="false" onAction="#removeCustomerButtonClicked" style="-fx-background-radius: 0;" text="Remove" />
                                  </children>
                               </AnchorPane>
                         </content>
                       </Tab>
                     </tabs>
                   </TabPane>
-                  <Button fx:id="logOutButton" disable="true" layoutX="585.0" layoutY="4.0" mnemonicParsing="false" onAction="#logOutButtonClick" style="-fx-background-radius: 0;" text="Logout" />
             </children>
           </AnchorPane>
-            <AnchorPane fx:id="loginBox" prefHeight="200.0" prefWidth="200.0">
+            <AnchorPane fx:id="addUpdateCustomer" prefHeight="200.0" prefWidth="200.0" visible="false">
                <children>
-                  <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#545454" height="200.0" layoutX="160.0" layoutY="84.0" stroke="WHITE" strokeType="INSIDE" width="325.0" />
-                  <Button layoutX="413.0" layoutY="243.0" mnemonicParsing="false" onAction="#logInButtonClicked" style="-fx-background-radius: 0;" text="Login" />
-                  <TextField fx:id="userName" layoutX="204.0" layoutY="172.0" prefHeight="25.0" prefWidth="177.0" />
-                  <Label layoutX="188.0" layoutY="93.0" text="Login" textFill="WHITE">
-                     <font>
-                        <Font name="Cascadia Code Regular" size="37.0" />
-                     </font>
-                  </Label>
-                  <Label layoutX="206.0" layoutY="150.0" text="Username" textFill="#fcfcfc" />
-                  <Label layoutX="206.0" layoutY="208.0" text="Password" textFill="WHITE" />
-                  <PasswordField fx:id="passString" layoutX="204.0" layoutY="231.0" prefHeight="25.0" prefWidth="177.0" />
-                  <Label layoutX="167.0" layoutY="267.0" text="Curent Location:" textFill="WHITE">
-                     <font>
-                        <Font name="System Bold" size="10.0" />
-                     </font>
-                  </Label>
-                  <Label fx:id="systemZoneIdLabel" layoutX="248.0" layoutY="267.0" text="System Location" textFill="WHITE">
-                     <font>
-                        <Font name="System Bold" size="10.0" />
-                     </font>
-                  </Label>
+                  <Group layoutX="333.0" layoutY="85.0">
+                     <children>
+                        <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#545454" height="330.0" layoutX="-4.0" stroke="WHITE" strokeType="INSIDE" width="297.0" />
+                        <TextField fx:id="customerAddressBox" layoutX="37.0" layoutY="115.0" prefHeight="25.0" prefWidth="216.0" />
+                        <ComboBox fx:id="stateProvinceBox" layoutX="37.0" layoutY="160.0" prefHeight="25.0" prefWidth="123.0" promptText="State/Province" />
+                        <ComboBox fx:id="countryBox" layoutX="167.0" layoutY="160.0" prefHeight="25.0" prefWidth="86.0" promptText="Country" />
+                        <TextField fx:id="customerPostalCodeBox" layoutX="37.0" layoutY="206.0" prefHeight="25.0" prefWidth="216.0" />
+                        <TextField fx:id="customerPhoneNumberBox" layoutX="37.0" layoutY="251.0" prefHeight="25.0" prefWidth="216.0" />
+                        <Button fx:id="customerSubmitButton" layoutX="147.0" layoutY="286.0" mnemonicParsing="false" onAction="#submitCustomerButtonClicked" prefHeight="25.0" prefWidth="81.0" style="-fx-background-radius: 0;" text="Submit" />
+                        <TextField fx:id="customerIdBox" editable="false" focusTraversable="false" layoutX="37.0" layoutY="71.0" prefHeight="25.0" prefWidth="217.0" />
+                        <Label fx:id="customerAddUpdateLabel" alignment="CENTER" focusTraversable="false" layoutX="-2.0" layoutY="12.0" prefHeight="38.0" prefWidth="294.0" text="Update Customer" textFill="WHITE">
+                           <font>
+                              <Font name="Cascadia Code Regular" size="31.0" />
+                           </font>
+                        </Label>
+                        <Button fx:id="customerCancelButton" layoutX="61.0" layoutY="286.0" mnemonicParsing="false" onAction="#cancelCustomerButtonClicked" prefHeight="25.0" prefWidth="81.0" style="-fx-background-radius: 0;" text="Cancel" />
+                        <Label fx:id="addUpdateCustomerIdLabel" layoutX="40.0" layoutY="53.0" text="Customer Id:" textFill="WHITE">
+                           <font>
+                              <Font name="System Bold" size="12.0" />
+                           </font>
+                        </Label>
+                        <Label fx:id="addUpdateCustomerAddressLabel" layoutX="41.0" layoutY="98.0" text="Address: (house#, Street, City)" textFill="WHITE">
+                           <font>
+                              <Font name="System Bold" size="12.0" />
+                           </font>
+                        </Label>
+                        <Label fx:id="addUpdateProvinceLabel" layoutX="41.0" layoutY="143.0" text="State/Province:" textFill="WHITE">
+                           <font>
+                              <Font name="System Bold" size="12.0" />
+                           </font>
+                        </Label>
+                        <Label fx:id="addUpdateCountryLabel" layoutX="171.0" layoutY="143.0" text="Country:" textFill="WHITE">
+                           <font>
+                              <Font name="System Bold" size="12.0" />
+                           </font>
+                        </Label>
+                        <Label fx:id="addUpdatePostalCodeLabel" layoutX="41.0" layoutY="189.0" text="Postal Code:" textFill="WHITE">
+                           <font>
+                              <Font name="System Bold" size="12.0" />
+                           </font>
+                        </Label>
+                        <Label fx:id="addUpdatePhoneLabel" layoutX="41.0" layoutY="234.0" text="Phone Number:" textFill="WHITE">
+                           <font>
+                              <Font name="System Bold" size="12.0" />
+                           </font>
+                        </Label>
+                     </children>
+                  </Group>
+               </children></AnchorPane>
+            <AnchorPane fx:id="addUpdateAptBox" prefHeight="200.0" prefWidth="200.0" visible="false">
+               <children>
+                  <Group layoutX="288.0" layoutY="75.0">
+                     <children>
+                        <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#545454" height="350.0" layoutX="-4.0" stroke="WHITE" strokeType="INSIDE" width="386.0" />
+                        <TextField fx:id="aptTitleBox" layoutX="7.0" layoutY="110.0" prefHeight="25.0" prefWidth="177.0" />
+                        <TextField fx:id="aptLocationBox" layoutX="7.0" layoutY="150.0" prefHeight="25.0" prefWidth="177.0" />
+                        <TextField fx:id="aptTypeBox" layoutX="7.0" layoutY="190.0" prefHeight="25.0" prefWidth="177.0" />
+                        <DatePicker fx:id="aptStartDate" layoutX="191.0" layoutY="70.0" prefHeight="25.0" prefWidth="178.0" />
+                        <Spinner fx:id="aptStartHrs" layoutX="191.0" layoutY="111.0" prefHeight="25.0" prefWidth="86.0" />
+                        <Spinner fx:id="aptStartMin" layoutX="283.0" layoutY="111.0" prefHeight="25.0" prefWidth="86.0" />
+                        <DatePicker fx:id="aptEndDate" layoutX="191.0" layoutY="160.0" prefHeight="25.0" prefWidth="178.0" />
+                        <Spinner fx:id="aptEndHrs1" layoutX="191.0" layoutY="204.0" prefHeight="25.0" prefWidth="86.0" />
+                        <Spinner fx:id="aptEndMin1" layoutX="283.0" layoutY="204.0" prefHeight="25.0" prefWidth="86.0" />
+                        <TextArea fx:id="aptDescBox" layoutX="191.0" layoutY="244.0" prefHeight="54.0" prefWidth="178.0" />
+                        <Button fx:id="aptSubmitButton" layoutX="190.0" layoutY="306.0" mnemonicParsing="false" onAction="#submitAptButtonClicked" prefHeight="25.0" prefWidth="81.0" style="-fx-background-radius: 0;" text="Submit" />
+                        <TextField fx:id="aptIdBox" editable="false" focusTraversable="false" layoutX="7.0" layoutY="70.0" prefHeight="25.0" prefWidth="105.0" />
+                        <Label fx:id="addAptLabel" alignment="CENTER" focusTraversable="false" layoutX="-2.0" layoutY="12.0" prefHeight="38.0" prefWidth="383.0" text="New Appointment" textFill="WHITE">
+                           <font>
+                              <Font name="Cascadia Code Regular" size="31.0" />
+                           </font>
+                        </Label>
+                        <Label fx:id="aptContactLabel" focusTraversable="false" layoutX="11.0" layoutY="214.0" text="Contact:" textFill="WHITE">
+                           <font>
+                              <Font name="System Bold" size="12.0" />
+                           </font>
+                        </Label>
+                        <TextField fx:id="aptUserIdBox" focusTraversable="false" layoutX="117.0" layoutY="70.0" prefHeight="25.0" prefWidth="67.0" />
+                        <Label fx:id="aptCustomerNameLabel" focusTraversable="false" layoutX="11.0" layoutY="255.0" text="Customer:" textFill="WHITE">
+                           <font>
+                              <Font name="System Bold" size="12.0" />
+                           </font>
+                        </Label>
+                        <Label fx:id="aptStartHoursLabel" focusTraversable="false" layoutX="191.0" layoutY="94.0" text="Hours" textFill="WHITE">
+                           <font>
+                              <Font name="System Bold" size="12.0" />
+                           </font>
+                        </Label>
+                        <Label fx:id="aptStartMinutesLabel" focusTraversable="false" layoutX="286.0" layoutY="94.0" text="Minutes" textFill="WHITE">
+                           <font>
+                              <Font name="System Bold" size="12.0" />
+                           </font>
+                        </Label>
+                        <Label fx:id="aptEndHoursLabel" focusTraversable="false" layoutX="193.0" layoutY="187.0" text="Hours" textFill="WHITE">
+                           <font>
+                              <Font name="System Bold" size="12.0" />
+                           </font>
+                        </Label>
+                        <Label fx:id="aptEndMinutesLabel" focusTraversable="false" layoutX="288.0" layoutY="187.0" text="Minutes" textFill="WHITE">
+                           <font>
+                              <Font name="System Bold" size="12.0" />
+                           </font>
+                        </Label>
+                        <Button fx:id="aptCancelButton" layoutX="104.0" layoutY="306.0" mnemonicParsing="false" onAction="#cancelAptButtonClicked" prefHeight="25.0" prefWidth="81.0" style="-fx-background-radius: 0;" text="Cancel" />
+                        <ComboBox fx:id="aptContactBox" layoutX="7.0" layoutY="230.0" prefHeight="25.0" prefWidth="177.0" />
+                        <ComboBox fx:id="aptCustomerBox" layoutX="7.0" layoutY="271.0" onAction="#customerGetIdByName" prefHeight="25.0" prefWidth="177.0" />
+                        <Label fx:id="aptCustomerIdLabel" focusTraversable="false" layoutX="154.0" layoutY="255.0" text="ID#" textFill="WHITE">
+                           <font>
+                              <Font name="System Bold" size="12.0" />
+                           </font>
+                        </Label>
+                        <Line endX="77.0" layoutX="290.0" layoutY="142.0" startX="-100.0" stroke="WHITE" />
+                        <Label fx:id="aptIdLabel" focusTraversable="false" layoutX="10.0" layoutY="50.0" text="Appointment Id:" textFill="WHITE">
+                           <font>
+                              <Font name="System Bold" size="12.0" />
+                           </font>
+                        </Label>
+                        <Label fx:id="aptUserIdLabel" focusTraversable="false" layoutX="121.0" layoutY="50.0" text="User Id:" textFill="WHITE">
+                           <font>
+                              <Font name="System Bold" size="12.0" />
+                           </font>
+                        </Label>
+                        <Label fx:id="aptTitleLabel" focusTraversable="false" layoutX="10.0" layoutY="94.0" text="Title:" textFill="WHITE">
+                           <font>
+                              <Font name="System Bold" size="12.0" />
+                           </font>
+                        </Label>
+                        <Label fx:id="aptLocationLabel" focusTraversable="false" layoutX="10.0" layoutY="134.0" text="Location:" textFill="WHITE">
+                           <font>
+                              <Font name="System Bold" size="12.0" />
+                           </font>
+                        </Label>
+                        <Label fx:id="aptTypeLabel" focusTraversable="false" layoutX="10.0" layoutY="173.0" text="Type:" textFill="WHITE">
+                           <font>
+                              <Font name="System Bold" size="12.0" />
+                           </font>
+                        </Label>
+                        <Label fx:id="aptContactIdLabel" focusTraversable="false" layoutX="154.0" layoutY="214.0" text="ID#" textFill="WHITE">
+                           <font>
+                              <Font name="System Bold" size="12.0" />
+                           </font>
+                        </Label>
+                        <Label fx:id="aptStartLabel" focusTraversable="false" layoutX="195.0" layoutY="50.0" text="Start Date and Time:" textFill="WHITE">
+                           <font>
+                              <Font name="System Bold" size="12.0" />
+                           </font>
+                        </Label>
+                        <Label fx:id="aptEndLabel1" focusTraversable="false" layoutX="195.0" layoutY="143.0" text="End Date and Time:" textFill="WHITE">
+                           <font>
+                              <Font name="System Bold" size="12.0" />
+                           </font>
+                        </Label>
+                        <Label fx:id="aptDescriptionLabel" focusTraversable="false" layoutX="193.0" layoutY="228.0" text="Description:" textFill="WHITE">
+                           <font>
+                              <Font name="System Bold" size="12.0" />
+                           </font>
+                        </Label>
+                     </children>
+                  </Group>
                </children>
             </AnchorPane>
-            <AnchorPane fx:id="addUpdateCustomer" prefHeight="200.0" prefWidth="200.0" visible="false" />
-            <AnchorPane fx:id="addUpdateAppointment" prefHeight="200.0" prefWidth="200.0" visible="false" />
+            <AnchorPane fx:id="loginBox" prefHeight="200.0" prefWidth="200.0">
+               <children>
+                  <Group layoutX="346.0" layoutY="162.0">
+                     <children>
+                        <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#545454" height="176.0" stroke="WHITE" strokeType="INSIDE" width="263.0" />
+                        <Button fx:id="loginButton" layoutX="91.0" layoutY="123.0" mnemonicParsing="false" onAction="#logInButtonClicked" prefHeight="25.0" prefWidth="81.0" style="-fx-background-radius: 0;" text="Login" />
+                        <TextField fx:id="userName" layoutX="44.0" layoutY="62.0" prefHeight="25.0" prefWidth="177.0" promptText="Username" />
+                        <Label fx:id="loginLabel" layoutX="28.0" layoutY="9.0" text="Login" textFill="WHITE">
+                           <font>
+                              <Font name="Cascadia Code Regular" size="37.0" />
+                           </font>
+                        </Label>
+                        <PasswordField fx:id="passString" layoutX="44.0" layoutY="92.0" prefHeight="25.0" prefWidth="177.0" promptText="Password" />
+                        <Label fx:id="locationLabel" layoutX="7.0" layoutY="159.0" text="Curent Location: Current Location" textFill="WHITE">
+                           <font>
+                              <Font name="System Bold" size="10.0" />
+                           </font>
+                        </Label>
+                     </children>
+                  </Group>
+               </children>
+            </AnchorPane>
+            <Button fx:id="logOutButton" disable="true" focusTraversable="false" mnemonicParsing="false" onAction="#logOutButtonClick" style="-fx-background-radius: 0;" text="Logout">
+               <StackPane.margin>
+                  <Insets right="5.0" top="4.0" />
+               </StackPane.margin>
+            </Button>
          </children>
       </StackPane>
   </children>

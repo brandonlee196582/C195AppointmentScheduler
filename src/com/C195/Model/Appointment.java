@@ -12,11 +12,11 @@ import static com.C195.helper.JDBC.connection;
 
 public class Appointment {
     private int aptId, customerId, userId, contactId;
-    private String aptTitle, aptDescription, aptLocation, aptType, aptCreatedBy, aptLastUpdatedBy;
+    private String aptTitle, aptDescription, aptLocation, aptType, aptCreatedBy, aptLastUpdatedBy, contactString;
     private Date aptStartDateTime,aptEndDateTime, aptCreationDate, aptLastUpdatedDate;
     private static ObservableList<Appointment> allApts = FXCollections.observableArrayList();
 
-    public Appointment(int aptId, String aptTitle, String aptDescription, String aptLocation, String aptType,Date aptStartDateTime, Date aptEndDateTime, Date aptCreationDate, String aptCreatedBy, Date aptLastUpdatedDate, String lastUpdatedBy, Integer customerId, Integer userId, Integer contactId) {
+    public Appointment(int aptId, String aptTitle, String aptDescription, String aptLocation, String aptType,Date aptStartDateTime, Date aptEndDateTime, Date aptCreationDate, String aptCreatedBy, Date aptLastUpdatedDate, String lastUpdatedBy, Integer customerId, Integer userId, Integer contactId, String contactString) {
         this.aptId = aptId;
         this.aptTitle = aptTitle;
         this.aptDescription = aptDescription;
@@ -31,10 +31,12 @@ public class Appointment {
         this.customerId = customerId;
         this.userId = userId;
         this.contactId = contactId;
+        this.contactString = contactString;
     }
     public static ObservableList<Appointment> getAllapts() {return allApts;}
     public static void addApt(Appointment newApt) {allApts.add(newApt);}
     public int getAptId() {return aptId;}
+    public String getContactString() {return contactString;}
     public void setAptId(int aptId) {this.aptId = aptId;}
     public String getAptTitle() {return aptTitle;}
     public void setAptTitle(String aptTitle) {this.aptTitle = aptTitle;}
@@ -64,15 +66,23 @@ public class Appointment {
     public void setContactId(int contactId) {this.contactId = contactId;}
 
     public static void getDatabaseApts() throws SQLException {
-        String sql;
+        Integer contactId;
+        String aptSql, contactSql, contactName = "";
 
-        sql = "SELECT * FROM client_schedule.appointments";
-        PreparedStatement ps = connection.prepareStatement(sql, ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE);
+        aptSql = "SELECT * FROM client_schedule.appointments";
+        PreparedStatement ps = connection.prepareStatement(aptSql, ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE);
         ResultSet rs = ps.executeQuery();
 
         while(rs.next()){
-            System.out.println();
-            Appointment.addApt(new Appointment(rs.getInt("Appointment_ID"),rs.getString("Title"),rs.getString("Description"),rs.getString("Location"),rs.getString("Type"),rs.getTimestamp("Start"),rs.getTimestamp("End"),rs.getTimestamp("Create_Date"),rs.getString("Created_By"),rs.getTimestamp("Last_Update"),rs.getString("Last_Updated_By"),rs.getInt("Customer_ID"),rs.getInt("User_ID"),rs.getInt("Contact_ID")));
+            //SELECT * FROM client_schedule.contacts where Contact_ID=2;
+            contactId = rs.getInt("Contact_ID");
+            contactSql = "SELECT * FROM client_schedule.contacts where Contact_ID=" + contactId;
+            PreparedStatement contactPs = connection.prepareStatement(contactSql, ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE);
+            ResultSet contactRs = contactPs.executeQuery();
+            while(contactRs.next()){
+                contactName = contactRs.getString("Contact_Name");
+            }
+            Appointment.addApt(new Appointment(rs.getInt("Appointment_ID"),rs.getString("Title"),rs.getString("Description"),rs.getString("Location"),rs.getString("Type"),rs.getTimestamp("Start"),rs.getTimestamp("End"),rs.getTimestamp("Create_Date"),rs.getString("Created_By"),rs.getTimestamp("Last_Update"),rs.getString("Last_Updated_By"),rs.getInt("Customer_ID"),rs.getInt("User_ID"),contactId,contactName));
         }
     }
 
