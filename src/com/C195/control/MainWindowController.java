@@ -1,6 +1,7 @@
 package com.C195.control;
 
 import com.C195.Model.Appointment;
+import com.C195.Model.Contact;
 import com.C195.Model.Customer;
 import com.C195.helper.JDBC;
 import javafx.application.Platform;
@@ -13,9 +14,13 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 import java.net.URL;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.ZoneId;
 import java.util.*;
+
+import static com.C195.helper.JDBC.connection;
 
 public class MainWindowController implements Initializable {
 
@@ -41,9 +46,8 @@ public class MainWindowController implements Initializable {
     @FXML ComboBox aptContactBox, aptCustomerBox;
     @FXML DatePicker aptStartDate, aptEndDate;
     @FXML Label aptIdLabel, aptUserIdLabel, addAptLabel, aptTitleLabel, aptContactLabel, aptContactIdLabel, aptLocationLabel, aptCustomerNameLabel, aptCustomerIdLabel, aptTypeLabel, aptStartLabel, aptStartHoursLabel, aptStartMinutesLabel, aptEndLabel1, aptEndHoursLabel, aptEndMinutesLabel, aptDescriptionLabel;
-    @FXML Spinner aptStartHrs, aptStartMin, aptEndHrs1, aptEndMin1;
     @FXML TextArea aptDescBox;
-    @FXML TextField aptIdBox, aptUserIdBox, aptTitleBox, aptLocationBox, aptTypeBox;
+    @FXML TextField aptIdBox, aptUserIdBox, aptTitleBox, aptLocationBox, aptTypeBox, aptStartHrs, aptStartMin, aptEndHrs, aptEndMin;
     //---------
 
     //Add update customer window controls and labels
@@ -93,16 +97,58 @@ public class MainWindowController implements Initializable {
     }
 
     public void updateAptButtonClicked(ActionEvent actionEvent) throws SQLException {
+
+        Appointment selectedApt = aptTableView.getSelectionModel().getSelectedItem();
+        if (selectedApt == null) {
+            MainWindowController.errorDialog("No appointment selected", "Please select an appointment to update.");
+            return;
+        }
+
         tableViews.setDisable(true);
         logOutButton.setDisable(true);
         addUpdateAptBox.setVisible(true);
         addAptLabel.setText("Update Appointment");
 
+        setAppointment(selectedApt);
+
         aptCustomerBox.setItems(FXCollections.observableList(Customer.getAllCustomerNames()));
+        aptContactBox.setItems(FXCollections.observableList(Contact.getAllContactNames()));
+    }
 
+    public void setAppointment(Appointment selectedApt) {
+        aptIdBox.setText(Integer.toString(selectedApt.getAptId()));
+        aptUserIdBox.setText(Integer.toString(selectedApt.getUserId()));
+        aptTitleBox.setText(selectedApt.getAptTitle());
+        aptLocationBox.setText(selectedApt.getAptLocation());
+        aptTypeBox.setText(selectedApt.getAptType());
+        aptContactBox.setValue(Contact.getContactNameById(selectedApt.getContactId()));
+        aptCustomerBox.setValue(Customer.getCustomerNameById(selectedApt.getCustomerId()));
+        aptContactIdLabel.setText(Integer.toString(selectedApt.getContactId()));
+        aptCustomerIdLabel.setText(Integer.toString(selectedApt.getCustomerId()));
+        String[] startDateArray = processTime(selectedApt.getAptStartDateTime());
+        aptStartDate.getEditor().setText(startDateArray[0]);
+        aptStartHrs.setText(startDateArray[1]);
+        aptStartMin.setText(startDateArray[2]);
+        String[] endDateArray = processTime(selectedApt.getAptEndDateTime());
+        aptEndDate.getEditor().setText(endDateArray[0]);
+        aptEndHrs.setText(endDateArray[1]);
+        aptEndMin.setText(endDateArray[2]);
+        aptDescBox.setText(selectedApt.getAptDescription());
+    }
 
+    public String[] processTime (Date date) {
+        String[] dateSplit = date.toString().split(" ");
+        String[] timeSplit = dateSplit[1].split(":");
+        String[] dateArray = new String[] {dateSplit[0], timeSplit[0], timeSplit[1], timeSplit[2]};
 
-        aptContactBox.setItems(FXCollections.observableList(Customer.getAllCustomerNames()));
+        return dateArray;
+    }
+
+    public void contactGetIdByName(ActionEvent actionEvent) throws SQLException {
+        int aptAddUpdateContactId = 0;
+        Object contactName = (String) aptContactBox.getValue();
+        aptAddUpdateContactId = Contact.getContactIdByName((String) contactName);
+        aptContactIdLabel.setText(String.valueOf(aptAddUpdateContactId));
     }
 
     public void customerGetIdByName(ActionEvent actionEvent) throws SQLException {
@@ -147,25 +193,40 @@ public class MainWindowController implements Initializable {
         addUpdateCustomer.setVisible(false);
     }
 
+    public void cleanAptForm() {
+        aptIdBox.setText("");
+        aptUserIdBox.setText("");
+        aptTitleBox.setText("");
+        aptLocationBox.setText("");
+        aptTypeBox.setText("");
+        aptContactBox.setValue("");
+        aptCustomerBox.setValue("");
+        aptContactIdLabel.setText("");
+        aptCustomerIdLabel.setText("");
+        aptStartDate.getEditor().clear();
+        aptStartHrs.setText("");
+        aptStartMin.setText("");
+        aptEndDate.getEditor().clear();
+        aptEndHrs.setText("");
+        aptEndMin.setText("");
+        aptDescBox.setText("");
+    }
+
     public void submitAptButtonClicked(ActionEvent actionEvent) throws SQLException {
         System.out.println("added appointment");
         tableViews.setDisable(false);
         logOutButton.setDisable(false);
         addUpdateAptBox.setVisible(false);
 
-        aptIdBox.setText("");
-        aptUserIdBox.setText("");
-        aptTitleBox.setText("");
-        aptLocationBox.setText("");
-        aptTypeBox.setText("");
-        aptContactBox.setValue(0);
-        //aptCustomerBox.se
+        cleanAptForm();
     }
 
     public void cancelAptButtonClicked(ActionEvent actionEvent) throws SQLException {
         tableViews.setDisable(false);
         logOutButton.setDisable(false);
         addUpdateAptBox.setVisible(false);
+
+        cleanAptForm();
     }
 
     public void logInButtonClicked(ActionEvent actionEvent) throws SQLException {
@@ -189,6 +250,7 @@ public class MainWindowController implements Initializable {
 
             Customer.getDatabaseCustomers();
             Appointment.getDatabaseApts();
+            Contact.getDatabaseContacts();
 
             customerTableView.setItems(Customer.getAllCustomers());
             customerIDColumn.setCellValueFactory(new PropertyValueFactory<>("customerId"));
@@ -225,14 +287,28 @@ public class MainWindowController implements Initializable {
         }
     }
 
+    static void errorDialog(String title, String content){
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle(title);
+        alert.setHeaderText("Error");
+        alert.setContentText(content);
+        Optional<ButtonType> result = alert.showAndWait();
+        result.get();
+    }
+
     public void initialize(URL location, ResourceBundle resources) {
         systemZoneId = ZoneId.systemDefault();
         locationLabel.setText("Current Location: " + systemZoneId.toString());
         frLocale = new Locale("fr", "FR");
         usLocale = new Locale("en", "US");
         sysLocale = Locale.getDefault();
+
+
+
+        //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         userName.setText("sqlUser");
         passString.setText("Passw0rd!");
+        //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
         if (sysLocale.getLanguage() == frLocale.getLanguage()) {
             rb1 = ResourceBundle.getBundle("com.C195.resources.Lang", frLocale);

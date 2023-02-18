@@ -55,6 +55,18 @@ public class Customer {
         }
         return (int) id.get(0);
     }
+    public static String  getCustomerNameById(int customerId) {
+        List name = new ArrayList();
+        allCustomers.forEach(object -> {
+            if (object.getCustomerId() == customerId) {
+                name.add(object.getCustomerName());
+            }
+        });
+        if (name.isEmpty()) {
+            return "unknown";
+        }
+        return name.get(0).toString();
+    }
     public void setCustomerId(int customerId) {this.customerId = customerId;}
     public String getCustomerName() {return customerName;}
     public void setCustomerName(String customerName) {this.customerName = customerName;}
