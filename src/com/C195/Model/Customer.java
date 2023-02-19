@@ -13,12 +13,12 @@ import java.util.List;
 import static com.C195.helper.JDBC.connection;
 
 public class Customer {
-    private int customerId,divisionId;
-    private String customerName, address, postalCode, phone, createdBy, lastUpdateBy, division, country;
+    private int customerId, divisionId;
+    private String customerName, address, postalCode, phone, createdBy, lastUpdateBy, divisionName, countryName;
     private Date createDateTime, lastUpdateDateTime;
     private static ObservableList<Customer> allCustomers = FXCollections.observableArrayList();
 
-    public Customer(int customerId, String customerName, String address, String postalCode, String phone, Date createDateTime, String createdBy, Date lastUpdateDateTime, String lastUpdateBy, int divisionId, String division, String country) {
+    public Customer(int customerId, String customerName, String address, String postalCode, String phone, Date createDateTime, String createdBy, Date lastUpdateDateTime, String lastUpdateBy, int divisionId, String divisionName, String countryName) {
         this.customerId = customerId;
         this.customerName = customerName;
         this.address = address;
@@ -29,11 +29,25 @@ public class Customer {
         this.lastUpdateDateTime = lastUpdateDateTime;
         this.lastUpdateBy = lastUpdateBy;
         this.divisionId = divisionId;
-        this.division = division;
-        this.country = country;
+        this.divisionName = divisionName;
+        this.countryName = countryName;
     }
-
     public static ObservableList<Customer> getAllCustomers() {return allCustomers;}
+    public int getCustomerId() {return customerId;}
+    public String getCustomerName() {return customerName;}
+    public static void addCustomer(Customer newCustomer) {allCustomers.add(newCustomer);}
+    public void setCustomerId(int customerId) {this.customerId = customerId;}
+    public void setCustomerName(String customerName) {this.customerName = customerName;}
+    public String getAddress() {return address;}
+    public void setAddress(String address) {this.address = address;}
+    public String getPostalCode() {return postalCode;}
+    public void setPostalCode(String postalCode) {this.postalCode = postalCode;}
+    public String getPhone() {return phone;}
+    public void setPhone(String phone) {this.phone = phone;}
+    public int getDivisionId() {return divisionId;}
+    public String getDivisionName() {return  divisionName;}
+    public String getCountryName() {return countryName;}
+
     public static List getAllCustomerNames() {
         List customerNameList = new ArrayList();
         allCustomers.forEach(object -> {
@@ -41,8 +55,6 @@ public class Customer {
         });
         return customerNameList;
     }
-    public static void addCustomer(Customer newCustomer) {allCustomers.add(newCustomer);}
-    public int getCustomerId() {return customerId;}
     public static int getCustomerIdByName(String searchName) {
         List id = new ArrayList();
         allCustomers.forEach(object -> {
@@ -67,55 +79,51 @@ public class Customer {
         }
         return name.get(0).toString();
     }
-    public void setCustomerId(int customerId) {this.customerId = customerId;}
-    public String getCustomerName() {return customerName;}
-    public void setCustomerName(String customerName) {this.customerName = customerName;}
-    public String getAddress() {return address;}
-    public String getDivision() {return division;}
-    public String getCountry() {return country;}
-    public void setAddress(String address) {this.address = address;}
-    public String getPostalCode() {return postalCode;}
-    public void setPostalCode(String postalCode) {this.postalCode = postalCode;}
-    public String getPhone() {return phone;}
-    public void setPhone(String phone) {this.phone = phone;}
 
     public static void getDatabaseCustomers() throws SQLException {
-        int divisionId = 0, countryId = 0;
-        String sql, divisionSql, countrySql, division = "", country = "";
+        String sql;
 
         sql = "SELECT * FROM client_schedule.customers";
         PreparedStatement ps = connection.prepareStatement(sql, ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE);
         ResultSet rs = ps.executeQuery();
 
         while(rs.next()){
-            //SELECT * FROM client_schedule.contacts where Contact_ID=2;
-            divisionId = rs.getInt("Division_ID");
-            divisionSql = "SELECT * FROM client_schedule.first_level_divisions where Division_ID=" + divisionId;
-            PreparedStatement contactPs = connection.prepareStatement(divisionSql, ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE);
-            ResultSet contactRs = contactPs.executeQuery();
-            while(contactRs.next()){
-                division = contactRs.getString("Division");
-                countryId = contactRs.getInt("Country_ID");
-            }
-            countrySql = "SELECT * FROM client_schedule.countries where Country_ID=" + countryId;
-            PreparedStatement countryPs = connection.prepareStatement(countrySql, ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE);
-            ResultSet countryRs = countryPs.executeQuery();
-            while(countryRs.next()){
-                country = countryRs.getString("Country");
-            }
-            Customer.addCustomer(new Customer(rs.getInt("Customer_ID"),rs.getString("Customer_Name"),rs.getString("Address"),rs.getString("Postal_Code"),rs.getString("Phone"),rs.getDate("Create_Date"),rs.getString("Created_By"),rs.getTimestamp("Last_Update"),rs.getString("Last_Updated_By"),divisionId,division,country));
+            String divisionString = Division.getDivisionNameById(rs.getInt("Division_ID"));
+            int countryId = Division.getCountryIdByDivisionId(rs.getInt("Division_ID"));
+            String countryString = Country.getCountryNameById(countryId);
+            Customer.addCustomer(new Customer(rs.getInt("Customer_ID"),rs.getString("Customer_Name"),rs.getString("Address"),rs.getString("Postal_Code"),rs.getString("Phone"),rs.getDate("Create_Date"),rs.getString("Created_By"),rs.getTimestamp("Last_Update"),rs.getString("Last_Updated_By"),rs.getInt("Division_ID"),divisionString,countryString));
         }
     }
 
-    public static int insertCustomer(String customerName, String address, String postalCode, String phone, int divisionId) throws SQLException {
-        String sql = "INSERT INTO customers (Customer_Name, Address, Postal_Code, Phone, Division_ID) VALUES(?, ?, ?, ?, ?)";
-        PreparedStatement ps = connection.prepareStatement(sql);
-        ps.setString(1, customerName);
-        ps.setString(2, address);
-        ps.setString(3, postalCode);
-        ps.setString(4, phone);
-        ps.setInt(5, divisionId);
-        int rowsAffected = ps.executeUpdate();
-        return rowsAffected;
+    public static int insertCustomer(int id, String name, String address, String postalCode, String phone, int divisionId, String user, String menu) throws SQLException {
+        java.sql.Date createDate, lastUpdateDate;
+        if (menu == "Add Customer") {
+            java.util.Date utilDate = new java.util.Date();
+            createDate = new java.sql.Date(utilDate.getTime());
+            lastUpdateDate = new java.sql.Date(utilDate.getTime());
+
+            String sql = "INSERT INTO customers (Customer_Name, Address, Postal_Code, Phone, Create_Date, Created_By, Last_Update, Last_Updated_By, Division_ID) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)";
+            PreparedStatement ps = connection.prepareStatement(sql);
+            ps.setString(1, name);
+            ps.setString(2, address);
+            ps.setString(3, postalCode);
+            ps.setString(4, phone);
+            ps.setDate(5, createDate);
+            ps.setString(6,user);
+            ps.setDate(7, lastUpdateDate);
+            ps.setString(8,user);
+            ps.setInt(9, divisionId);
+            int rowsAffected = ps.executeUpdate();
+            return rowsAffected;
+        } else {
+            System.out.println("no done yet");
+        }
+        return 0;
+    }
+
+    public static void remeoveCustomer(int id) throws SQLException {
+            String sql = "DELETE FROM client_schedule.customers WHERE Customer_ID=" + id;
+            PreparedStatement ps = connection.prepareStatement(sql);
+            ps.executeUpdate();
     }
 }

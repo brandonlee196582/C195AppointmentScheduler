@@ -82,48 +82,64 @@
           </AnchorPane>
             <AnchorPane fx:id="addUpdateCustomer" prefHeight="200.0" prefWidth="200.0" visible="false">
                <children>
-                  <Group layoutX="333.0" layoutY="85.0">
+                  <Group layoutX="333.0" layoutY="65.0">
                      <children>
-                        <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#545454" height="330.0" layoutX="-4.0" stroke="WHITE" strokeType="INSIDE" width="297.0" />
-                        <TextField fx:id="customerAddressBox" layoutX="37.0" layoutY="115.0" prefHeight="25.0" prefWidth="216.0" />
-                        <ComboBox fx:id="stateProvinceBox" layoutX="37.0" layoutY="160.0" prefHeight="25.0" prefWidth="123.0" promptText="State/Province" />
-                        <ComboBox fx:id="countryBox" layoutX="167.0" layoutY="160.0" prefHeight="25.0" prefWidth="86.0" promptText="Country" />
-                        <TextField fx:id="customerPostalCodeBox" layoutX="37.0" layoutY="206.0" prefHeight="25.0" prefWidth="216.0" />
-                        <TextField fx:id="customerPhoneNumberBox" layoutX="37.0" layoutY="251.0" prefHeight="25.0" prefWidth="216.0" />
-                        <Button fx:id="customerSubmitButton" layoutX="147.0" layoutY="286.0" mnemonicParsing="false" onAction="#submitCustomerButtonClicked" prefHeight="25.0" prefWidth="81.0" style="-fx-background-radius: 0;" text="Submit" />
+                        <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#545454" height="371.0" layoutX="-4.0" stroke="WHITE" strokeType="INSIDE" width="297.0" />
+                        <TextField fx:id="customerNameBox" layoutX="37.0" layoutY="113.0" prefHeight="25.0" prefWidth="217.0" />
+                        <TextField fx:id="customerAddressBox" layoutX="37.0" layoutY="156.0" prefHeight="25.0" prefWidth="216.0" />
+                        <ComboBox fx:id="stateProvinceBox" layoutX="37.0" layoutY="201.0" onAction="#setDivisionCountry" prefHeight="25.0" prefWidth="123.0" />
+                        <ComboBox fx:id="countryBox" layoutX="167.0" layoutY="201.0" onAction="#setCountry" prefHeight="25.0" prefWidth="86.0" />
+                        <TextField fx:id="customerPostalCodeBox" layoutX="37.0" layoutY="247.0" prefHeight="25.0" prefWidth="216.0" />
+                        <TextField fx:id="customerPhoneNumberBox" layoutX="37.0" layoutY="292.0" prefHeight="25.0" prefWidth="216.0" />
+                        <Button fx:id="customerSubmitButton" layoutX="147.0" layoutY="327.0" mnemonicParsing="false" onAction="#submitCustomerButtonClicked" prefHeight="25.0" prefWidth="81.0" style="-fx-background-radius: 0;" text="Submit" />
                         <TextField fx:id="customerIdBox" editable="false" focusTraversable="false" layoutX="37.0" layoutY="71.0" prefHeight="25.0" prefWidth="217.0" />
                         <Label fx:id="customerAddUpdateLabel" alignment="CENTER" focusTraversable="false" layoutX="-2.0" layoutY="12.0" prefHeight="38.0" prefWidth="294.0" text="Update Customer" textFill="WHITE">
                            <font>
                               <Font name="Cascadia Code Regular" size="31.0" />
                            </font>
                         </Label>
-                        <Button fx:id="customerCancelButton" layoutX="61.0" layoutY="286.0" mnemonicParsing="false" onAction="#cancelCustomerButtonClicked" prefHeight="25.0" prefWidth="81.0" style="-fx-background-radius: 0;" text="Cancel" />
+                        <Button fx:id="customerCancelButton" layoutX="61.0" layoutY="327.0" mnemonicParsing="false" onAction="#cancelCustomerButtonClicked" prefHeight="25.0" prefWidth="81.0" style="-fx-background-radius: 0;" text="Cancel" />
                         <Label fx:id="addUpdateCustomerIdLabel" layoutX="40.0" layoutY="53.0" text="Customer Id:" textFill="WHITE">
                            <font>
                               <Font name="System Bold" size="12.0" />
                            </font>
                         </Label>
-                        <Label fx:id="addUpdateCustomerAddressLabel" layoutX="41.0" layoutY="98.0" text="Address: (house#, Street, City)" textFill="WHITE">
+                        <Label fx:id="addUpdateCustomerAddressLabel" layoutX="41.0" layoutY="139.0" text="Address: (house#, Street, City)" textFill="WHITE">
                            <font>
                               <Font name="System Bold" size="12.0" />
                            </font>
                         </Label>
-                        <Label fx:id="addUpdateProvinceLabel" layoutX="41.0" layoutY="143.0" text="State/Province:" textFill="WHITE">
+                        <Label fx:id="addUpdateProvinceLabel" layoutX="41.0" layoutY="184.0" text="State/Province:" textFill="WHITE">
                            <font>
                               <Font name="System Bold" size="12.0" />
                            </font>
                         </Label>
-                        <Label fx:id="addUpdateCountryLabel" layoutX="171.0" layoutY="143.0" text="Country:" textFill="WHITE">
+                        <Label fx:id="addUpdateCountryLabel" layoutX="171.0" layoutY="184.0" text="Country:" textFill="WHITE">
                            <font>
                               <Font name="System Bold" size="12.0" />
                            </font>
                         </Label>
-                        <Label fx:id="addUpdatePostalCodeLabel" layoutX="41.0" layoutY="189.0" text="Postal Code:" textFill="WHITE">
+                        <Label fx:id="addUpdatePostalCodeLabel" layoutX="41.0" layoutY="230.0" text="Postal Code:" textFill="WHITE">
                            <font>
                               <Font name="System Bold" size="12.0" />
                            </font>
                         </Label>
-                        <Label fx:id="addUpdatePhoneLabel" layoutX="41.0" layoutY="234.0" text="Phone Number:" textFill="WHITE">
+                        <Label fx:id="addUpdatePhoneLabel" layoutX="41.0" layoutY="275.0" text="Phone Number:" textFill="WHITE">
+                           <font>
+                              <Font name="System Bold" size="12.0" />
+                           </font>
+                        </Label>
+                        <Label fx:id="addUpdateProvinceIdLabel" layoutX="139.0" layoutY="184.0" text="ID#" textFill="WHITE">
+                           <font>
+                              <Font name="System Bold" size="12.0" />
+                           </font>
+                        </Label>
+                        <Label fx:id="addUpdateCountryIdLabel" layoutX="232.0" layoutY="184.0" text="ID#" textFill="WHITE">
+                           <font>
+                              <Font name="System Bold" size="12.0" />
+                           </font>
+                        </Label>
+                        <Label fx:id="addUpdateCustomerNameLabel" layoutX="40.0" layoutY="96.0" text="Customer Name:" textFill="WHITE">
                            <font>
                               <Font name="System Bold" size="12.0" />
                            </font>

@@ -1,8 +1,6 @@
 package com.C195.control;
 
-import com.C195.Model.Appointment;
-import com.C195.Model.Contact;
-import com.C195.Model.Customer;
+import com.C195.Model.*;
 import com.C195.helper.JDBC;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
@@ -54,8 +52,8 @@ public class MainWindowController implements Initializable {
     @FXML AnchorPane addUpdateCustomer;
     @FXML Button customerCancelButton, customerSubmitButton;
     @FXML ComboBox stateProvinceBox, countryBox;
-    @FXML Label addUpdateCustomerIdLabel, addUpdateCustomerAddressLabel, addUpdateProvinceLabel, addUpdateCountryLabel, addUpdatePostalCodeLabel, addUpdatePhoneLabel, customerAddUpdateLabel;
-    @FXML TextField customerIdBox, customerAddressBox, customerPostalCodeBox, customerPhoneNumberBox;
+    @FXML Label addUpdateCustomerIdLabel, addUpdateCustomerNameLabel, addUpdateCustomerAddressLabel, addUpdateProvinceLabel, addUpdateProvinceIdLabel, addUpdateCountryLabel, addUpdateCountryIdLabel, addUpdatePostalCodeLabel, addUpdatePhoneLabel, customerAddUpdateLabel;
+    @FXML TextField customerIdBox, customerNameBox, customerAddressBox, customerPostalCodeBox, customerPhoneNumberBox;
     //---------
 
     //Login window controls and labels
@@ -94,6 +92,7 @@ public class MainWindowController implements Initializable {
         addAptLabel.setText("Add Appointment");
 
         aptCustomerBox.setItems(FXCollections.observableList(Customer.getAllCustomerNames()));
+        aptContactBox.setItems(FXCollections.observableList(Contact.getAllContactNames()));
     }
 
     public void updateAptButtonClicked(ActionEvent actionEvent) throws SQLException {
@@ -135,6 +134,18 @@ public class MainWindowController implements Initializable {
         aptEndMin.setText(endDateArray[2]);
         aptDescBox.setText(selectedApt.getAptDescription());
     }
+    public void setCustomer(Customer selectedCustomer) {
+        customerIdBox.setText(Integer.toString(selectedCustomer.getCustomerId()));
+        customerNameBox.setText(selectedCustomer.getCustomerName());
+        customerAddressBox.setText(selectedCustomer.getAddress());
+        addUpdateProvinceIdLabel.setText(Integer.toString(selectedCustomer.getDivisionId()));
+        stateProvinceBox.setValue(Division.getDivisionNameById(selectedCustomer.getDivisionId()));
+        int countryId = Division.getCountryIdByDivisionId(selectedCustomer.getDivisionId());
+        addUpdateCountryIdLabel.setText(Integer.toString(countryId));
+        countryBox.setValue(Country.getCountryNameById(countryId));
+        customerPostalCodeBox.setText(selectedCustomer.getPostalCode());
+        customerPhoneNumberBox.setText(selectedCustomer.getPhone());
+    }
 
     public String[] processTime (Date date) {
         String[] dateSplit = date.toString().split(" ");
@@ -158,6 +169,26 @@ public class MainWindowController implements Initializable {
         aptCustomerIdLabel.setText(String.valueOf(aptAddUpdateCustomerId));
     }
 
+    public void setDivisionCountry(ActionEvent actionEvent) throws SQLException {
+        int divisionId, countryId;
+
+        countryBox.setValue("");
+        addUpdateCountryIdLabel.setText("");
+
+        divisionId = Division.getDivisionIdByName((String) stateProvinceBox.getValue());
+        addUpdateProvinceIdLabel.setText(String.valueOf(divisionId));
+
+        countryId  = Division.getCountryIdByDivisionId(divisionId);
+        countryBox.setValue(Country.getCountryNameById(countryId));
+        addUpdateCountryIdLabel.setText(Integer.toString(countryId));
+    }
+
+    public void setCountry(ActionEvent actionEvent) throws SQLException {
+        int countryId;
+        countryId = Country.getCountryIdByName((String) countryBox.getValue());
+        addUpdateCountryIdLabel.setText(Integer.toString(countryId));
+    }
+
     public void removeAptButtonClicked(ActionEvent actionEvent) throws SQLException {
         System.out.println("removed appointment");
     }
@@ -167,30 +198,66 @@ public class MainWindowController implements Initializable {
         logOutButton.setDisable(true);
         addUpdateCustomer.setVisible(true);
         customerAddUpdateLabel.setText("Add Customer");
+
+        stateProvinceBox.setItems(FXCollections.observableList(Division.getAllDivisionNames()));
+        countryBox.setItems(FXCollections.observableList(Country.getAllCountryNames()));
     }
 
     public void updateCustomerButtonClicked(ActionEvent actionEvent) throws SQLException {
+        Customer selectedCustomer = customerTableView.getSelectionModel().getSelectedItem();
+
         tableViews.setDisable(true);
         logOutButton.setDisable(true);
         addUpdateCustomer.setVisible(true);
         customerAddUpdateLabel.setText("Update Customer");
+
+        setCustomer(selectedCustomer);
+
+        stateProvinceBox.setItems(FXCollections.observableList(Division.getAllDivisionNames()));
+        countryBox.setItems(FXCollections.observableList(Country.getAllCountryNames()));
     }
 
     public void removeCustomerButtonClicked(ActionEvent actionEvent) throws SQLException {
-        System.out.println("removed customer");
+
+        Customer selectedCustomer = customerTableView.getSelectionModel().getSelectedItem();
+
+        Customer.remeoveCustomer(selectedCustomer.getCustomerId());
+        customerTableView.getItems().clear();
+        Customer.getDatabaseCustomers();
+
     }
 
     public void cancelCustomerButtonClicked(ActionEvent actionEvent) throws SQLException {
         tableViews.setDisable(false);
         logOutButton.setDisable(false);
         addUpdateCustomer.setVisible(false);
+
+        cleanCustomerForm();
     }
 
     public void submitCustomerButtonClicked(ActionEvent actionEvent) throws SQLException {
+        int id = 0, divisionId;
+        String name, address, postalCode, phoneNumber, menu;
         System.out.println("added customer");
         tableViews.setDisable(false);
         logOutButton.setDisable(false);
         addUpdateCustomer.setVisible(false);
+
+        if (customerIdBox.getText() != "") {
+            id = Integer.parseInt(customerIdBox.getText());
+        }
+        name = customerNameBox.getText();
+        address = customerAddressBox.getText();
+        divisionId = Integer.parseInt(addUpdateProvinceIdLabel.getText());
+        postalCode = customerPostalCodeBox.getText();
+        phoneNumber = customerPhoneNumberBox.getText();
+        menu = customerAddUpdateLabel.getText();
+
+        Customer.insertCustomer(id,name,address,postalCode,phoneNumber,divisionId,userName.getText(),menu);
+        customerTableView.getItems().clear();
+        Customer.getDatabaseCustomers();
+
+        cleanCustomerForm();
     }
 
     public void cleanAptForm() {
@@ -210,6 +277,15 @@ public class MainWindowController implements Initializable {
         aptEndHrs.setText("");
         aptEndMin.setText("");
         aptDescBox.setText("");
+    }
+
+    public void cleanCustomerForm() {
+        customerIdBox.setText("");
+        customerAddressBox.setText("");
+        stateProvinceBox.setValue("");
+        countryBox.setValue("");
+        customerPostalCodeBox.setText("");
+        customerPhoneNumberBox.setText("");
     }
 
     public void submitAptButtonClicked(ActionEvent actionEvent) throws SQLException {
@@ -248,16 +324,18 @@ public class MainWindowController implements Initializable {
             tableViews.setDisable(false);
             logOutButton.setDisable(false);
 
-            Customer.getDatabaseCustomers();
-            Appointment.getDatabaseApts();
             Contact.getDatabaseContacts();
+            Division.getDatabaseDivisions();
+            Country.getDatabaseCountries();
+            Appointment.getDatabaseApts();
+            Customer.getDatabaseCustomers();
 
             customerTableView.setItems(Customer.getAllCustomers());
             customerIDColumn.setCellValueFactory(new PropertyValueFactory<>("customerId"));
             customerNameColumn.setCellValueFactory(new PropertyValueFactory<>("customerName"));
             addressColumn.setCellValueFactory(new PropertyValueFactory<>("address"));
-            divisionColumn.setCellValueFactory(new PropertyValueFactory<>("division"));
-            countryColumn.setCellValueFactory(new PropertyValueFactory<>("country"));
+            divisionColumn.setCellValueFactory(new PropertyValueFactory<>("divisionName"));
+            countryColumn.setCellValueFactory(new PropertyValueFactory<>("countryName"));
             PostalCodeColumn.setCellValueFactory(new PropertyValueFactory<>("postalCode"));
             PhoneColumn.setCellValueFactory(new PropertyValueFactory<>("phone"));
 
