@@ -20,6 +20,8 @@ import java.text.ParseException;
 import java.time.ZoneId;
 import java.util.*;
 
+import static java.time.LocalDate.now;
+
 public class MainWindowController implements Initializable {
 
     //Table view window controls and labels
@@ -32,8 +34,11 @@ public class MainWindowController implements Initializable {
     @FXML private TableColumn<Appointment, String> aptTitleColumn, aptLocationColumn, aptTypeColumn, aptDescriptionColumn, aptContactColumn;
     @FXML private TableColumn<Appointment, Timer> aptStartColumn;
     @FXML private TableColumn<Appointment, Date> aptEndColumn;
-    @FXML Button logOutButton, aptAddButton, aptUpdateButton, aptRemoveButton, customerAddButton, customerUpdateButton, customerRemoveButton;
-    @FXML Tab aptTabLabel, customerTabLabel;
+    @FXML Button logOutButton, aptAddButton, aptUpdateButton, aptRemoveButton, customerAddButton, customerUpdateButton, customerRemoveButton, setTodayButton;
+    @FXML Tab aptTabLabel, customerTabLabel, aptAllTab, aptDayTab, aptWeekTab, aptMonthTab;
+    @FXML DatePicker aptStartDateFilter;
+    @FXML Label aptStartDateFilterLabel;
+    @FXML TabPane aptFilterTabSelector;
     //---------
 
     //Add update appointment window controls and labels
@@ -129,6 +134,53 @@ public class MainWindowController implements Initializable {
     //----------------------
 
     //Main Window Functions
+
+    public void aptFilterTabSelect() {
+        int selectedTabIndex = aptFilterTabSelector.getSelectionModel().getSelectedIndex();
+
+        if (aptStartDateFilter != null) {
+            if (selectedTabIndex == 0) {
+                aptStartDateFilter.setDisable(true);
+                aptStartDateFilter.setValue(null);
+                aptTableView.setItems(Appointment.getAllapts());
+            }
+
+            if (selectedTabIndex == 1) {
+                aptStartDateFilter.setDisable(false);
+                setFilterDateBlock();
+                ObservableList<Appointment> aptsByDay = Appointment.getAptsByDay(aptStartDateFilter.getValue());
+                aptTableView.setItems(aptsByDay);
+            }
+
+            if (selectedTabIndex == 2) {
+                aptStartDateFilter.setDisable(false);
+                setFilterDateBlock();
+                ObservableList<Appointment> aptsByWeek = Appointment.getAptsByWeek(aptStartDateFilter.getValue());
+                aptTableView.setItems(aptsByWeek);
+            }
+
+            if (selectedTabIndex == 3) {
+                aptStartDateFilter.setDisable(false);
+                setFilterDateBlock();
+                ObservableList<Appointment> aptsByMonth = Appointment.getAptsByMonth(aptStartDateFilter.getValue());
+                aptTableView.setItems(aptsByMonth);
+            }
+        }
+
+    }
+
+    @FXML
+    public void setFilterDateBlock() {
+        if (aptStartDateFilter.getValue() == null) {
+            aptStartDateFilter.setValue(now());
+        }
+    }
+
+    @FXML
+    public void setFilterToday() {
+        aptStartDateFilter.setValue(now());
+    }
+
     @FXML
     protected void logOutButtonClick(ActionEvent actionEvent) {
         stage = (Stage) ((Button)actionEvent.getSource()).getScene().getWindow();
@@ -330,7 +382,6 @@ public class MainWindowController implements Initializable {
             id = Integer.parseInt(customerIdBox.getText());
         }
         name = customerNameBox.getText();
-        System.out.println(name.split(" ").length);
         if (name.split(" ").length == 1) {
             promptHelper.errorDialog("Input validation error!","You must enter a first and last name.");
             errorCk++;

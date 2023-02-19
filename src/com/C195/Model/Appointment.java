@@ -1,5 +1,6 @@
 package com.C195.Model;
 
+import com.C195.helper.DateTimeProcessing;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
@@ -7,7 +8,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
-import java.util.Date;
+import java.time.LocalDate;
+import java.util.Calendar;
 
 import static com.C195.helper.JDBC.connection;
 
@@ -65,6 +67,48 @@ public class Appointment {
     public void setUserId(int userId) {this.userId = userId;}
     public int getContactId() {return contactId;}
     public void setContactId(int contactId) {this.contactId = contactId;}
+
+    public static ObservableList<Appointment> getAptsByDay(LocalDate date) {
+        ObservableList<Appointment> foundApts = FXCollections.observableArrayList();
+        allApts.forEach(apt -> {
+            String dateString = date.toString();
+            String [] aptStartTimeArray = DateTimeProcessing.splitDateTime(apt.getAptStartDateTime());
+            if (dateString.equals(aptStartTimeArray[0])) {
+                foundApts.add(apt);
+            }
+        });
+        return foundApts;
+    }
+
+    public static ObservableList<Appointment> getAptsByWeek(LocalDate date) {
+
+        Calendar calendar = Calendar.getInstance();
+        String[] passedDate = date.toString().split("-");
+        calendar.set(Integer.parseInt(passedDate[0]), Integer.parseInt(passedDate[1]), Integer.parseInt(passedDate[2]));
+        String passedDateWeekOfYear = calendar.get(Calendar.WEEK_OF_YEAR) + passedDate[0];
+        ObservableList<Appointment> foundApts = FXCollections.observableArrayList();
+        allApts.forEach(apt -> {
+            String[] aptDateString = DateTimeProcessing.splitYearMonthDay(apt.getAptStartDateTime());
+            calendar.set(Integer.parseInt(aptDateString[0]), Integer.parseInt(aptDateString[1]), Integer.parseInt(aptDateString[2]));
+            String aptStartDateWeekOfYear = calendar.get(Calendar.WEEK_OF_YEAR) + aptDateString[0];
+            if (aptStartDateWeekOfYear.equals(passedDateWeekOfYear)) {
+                foundApts.add(apt);
+            }
+        });
+        return foundApts;
+    }
+
+    public static ObservableList<Appointment> getAptsByMonth(LocalDate date) {
+        ObservableList<Appointment> foundApts = FXCollections.observableArrayList();
+        allApts.forEach(apt -> {
+            String[] aptDateString = DateTimeProcessing.splitDateTime(apt.getAptStartDateTime());
+            LocalDate aptDate = LocalDate.parse(aptDateString[0]);
+            if (date.getMonthValue() == aptDate.getMonthValue()) {
+                foundApts.add(apt);
+            }
+        });
+        return foundApts;
+    }
 
     public static void getDatabaseApts() throws SQLException {
         Integer contactId;

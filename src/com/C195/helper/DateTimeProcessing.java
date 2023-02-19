@@ -38,4 +38,12 @@ public class DateTimeProcessing {
 
         return dateArray;
     }
+
+    public static String[] splitYearMonthDay(Timestamp timestamp) {
+
+        String[] splitDate = splitDateTime(timestamp);
+        String[] dateOut = splitDate[0].split("-");
+
+        return dateOut;
+    }
 }

@@ -32,24 +32,78 @@
                         <content>
                           <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="322.0" prefWidth="646.0">
                                  <children>
-                                    <TableView fx:id="aptTableView" layoutX="5.0" prefHeight="435.0" prefWidth="947.0">
-                                      <columns>
-                                          <TableColumn fx:id="aptIDColumn" prefWidth="32.0" text="ID" />
-                                          <TableColumn fx:id="aptTitleColumn" minWidth="0.0" prefWidth="96.0" text="Title" />
-                                          <TableColumn fx:id="aptDescriptionColumn" minWidth="0.0" prefWidth="96.0" text="Description" />
-                                          <TableColumn fx:id="aptLocationColumn" minWidth="0.0" prefWidth="76.0" text="Location" />
-                                          <TableColumn fx:id="aptContactColumn" minWidth="0.0" prefWidth="107.0" text="Contact" />
-                                          <TableColumn fx:id="aptTypeColumn" prefWidth="90.0" text="Type" />
-                                          <TableColumn fx:id="aptStartColumn" prefWidth="150.0" text="Start" />
-                                          <TableColumn fx:id="aptEndColumn" prefWidth="150.0" text="End" />
-                                          <TableColumn fx:id="aptCustomerIdColumn" prefWidth="69.0" text="Customer#" />
-                                          <TableColumn fx:id="aptUserIdColumn" prefWidth="78.0" text="User#" />
-                                      </columns>
-                                    </TableView>
                                     <Button fx:id="aptAddButton" layoutX="7.0" layoutY="441.0" mnemonicParsing="false" onAction="#addAptButtonClicked" style="-fx-background-radius: 0;" text="Add" />
                                     <Button fx:id="aptUpdateButton" layoutX="50.0" layoutY="441.0" mnemonicParsing="false" onAction="#updateAptButtonClicked" style="-fx-background-radius: 0;" text="Update" />
                                     <Button fx:id="aptRemoveButton" layoutX="110.0" layoutY="441.0" mnemonicParsing="false" onAction="#removeAptButtonClicked" style="-fx-background-radius: 0;" text="Remove" />
-                                    <AnchorPane layoutX="896.0" layoutY="304.0" maxHeight="25.0" maxWidth="55.0" minHeight="0.0" minWidth="0.0" prefHeight="25.0" prefWidth="55.0" />
+                                    <AnchorPane layoutX="2.0" maxHeight="25.0" maxWidth="55.0" minHeight="0.0" minWidth="0.0" prefHeight="25.0" prefWidth="55.0">
+                                       <children>
+                                          <StackPane prefHeight="435.0" prefWidth="954.0">
+                                             <children>
+                                                <TabPane fx:id="aptFilterTabSelector" prefHeight="435.0" prefWidth="954.0" tabClosingPolicy="UNAVAILABLE">
+                                                  <tabs>
+                                                      <Tab fx:id="aptAllTab" onSelectionChanged="#aptFilterTabSelect" style="-fx-background-radius: 0;" text="All">
+                                                         <content>
+                                                            <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+                                                         </content>
+                                                      </Tab>
+                                                      <Tab fx:id="aptDayTab" onSelectionChanged="#aptFilterTabSelect" style="-fx-background-radius: 0;" text="Day">
+                                                         <content>
+                                                            <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+                                                         </content>
+                                                      </Tab>
+                                                    <Tab fx:id="aptWeekTab" onSelectionChanged="#aptFilterTabSelect" style="-fx-background-radius: 0;" text="Week">
+                                                      <content>
+                                                        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+                                                      </content>
+                                                    </Tab>
+                                                    <Tab fx:id="aptMonthTab" onSelectionChanged="#aptFilterTabSelect" style="-fx-background-radius: 0;" text="Month">
+                                                      <content>
+                                                        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+                                                      </content>
+                                                    </Tab>
+                                                  </tabs>
+                                                </TabPane>
+                                                <DatePicker fx:id="aptStartDateFilter" disable="true" nodeOrientation="LEFT_TO_RIGHT" onAction="#aptFilterTabSelect" showWeekNumbers="true" style="-fx-background-radius: 0;" StackPane.alignment="TOP_CENTER">
+                                                   <opaqueInsets>
+                                                      <Insets />
+                                                   </opaqueInsets>
+                                                   <StackPane.margin>
+                                                      <Insets top="2.0" />
+                                                   </StackPane.margin>
+                                                </DatePicker>
+                                                <Label fx:id="aptStartDateFilterLabel" text="Filter Start Date" StackPane.alignment="TOP_CENTER">
+                                                   <StackPane.margin>
+                                                      <Insets left="275.0" top="5.0" />
+                                                   </StackPane.margin>
+                                                   <font>
+                                                      <Font name="System Bold" size="12.0" />
+                                                   </font>
+                                                </Label>
+                                                <TableView fx:id="aptTableView" prefHeight="407.0" prefWidth="947.0" StackPane.alignment="CENTER">
+                                                  <columns>
+                                                      <TableColumn fx:id="aptIDColumn" prefWidth="32.0" text="ID" />
+                                                      <TableColumn fx:id="aptTitleColumn" minWidth="0.0" prefWidth="96.0" text="Title" />
+                                                      <TableColumn fx:id="aptDescriptionColumn" minWidth="0.0" prefWidth="96.0" text="Description" />
+                                                      <TableColumn fx:id="aptLocationColumn" minWidth="0.0" prefWidth="76.0" text="Location" />
+                                                      <TableColumn fx:id="aptContactColumn" minWidth="0.0" prefWidth="107.0" text="Contact" />
+                                                      <TableColumn fx:id="aptTypeColumn" prefWidth="90.0" text="Type" />
+                                                      <TableColumn fx:id="aptStartColumn" prefWidth="150.0" text="Start" />
+                                                      <TableColumn fx:id="aptEndColumn" prefWidth="150.0" text="End" />
+                                                      <TableColumn fx:id="aptCustomerIdColumn" prefWidth="69.0" text="Customer#" />
+                                                      <TableColumn fx:id="aptUserIdColumn" prefWidth="78.0" text="User#" />
+                                                  </columns>
+                                                   <StackPane.margin>
+                                                      <Insets left="5.0" right="3.0" top="28.0" />
+                                                   </StackPane.margin>
+                                                </TableView>
+                                                <Button fx:id="setTodayButton" mnemonicParsing="false" onAction="#setFilterToday" style="-fx-background-radius: 0;" text="Set Today" StackPane.alignment="TOP_CENTER">
+                                                   <StackPane.margin>
+                                                      <Insets right="255.0" top="2.0" />
+                                                   </StackPane.margin>
+                                                </Button>
+                                             </children>
+                                          </StackPane>
+                                       </children></AnchorPane>
                                  </children>
                               </AnchorPane>
                         </content>
@@ -82,7 +136,7 @@
           </AnchorPane>
             <AnchorPane fx:id="addUpdateCustomer" prefHeight="200.0" prefWidth="200.0" visible="false">
                <children>
-                  <Group layoutX="333.0" layoutY="65.0">
+                  <Group layoutX="333.0" layoutY="87.0">
                      <children>
                         <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#545454" height="371.0" layoutX="-4.0" stroke="WHITE" strokeType="INSIDE" width="297.0" />
                         <TextField fx:id="customerNameBox" layoutX="37.0" layoutY="113.0" prefHeight="25.0" prefWidth="217.0" />
@@ -149,17 +203,23 @@
                </children></AnchorPane>
             <AnchorPane fx:id="addUpdateAptBox" prefHeight="200.0" prefWidth="200.0" visible="false">
                <children>
-                  <Group layoutX="288.0" layoutY="75.0">
+                  <Group layoutX="288.0" layoutY="98.0">
                      <children>
                         <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#545454" height="350.0" layoutX="-4.0" stroke="WHITE" strokeType="INSIDE" width="386.0" />
-                        <TextField fx:id="aptTitleBox" layoutX="7.0" layoutY="110.0" prefHeight="25.0" prefWidth="177.0" />
-                        <TextField fx:id="aptLocationBox" layoutX="7.0" layoutY="150.0" prefHeight="25.0" prefWidth="177.0" />
-                        <TextField fx:id="aptTypeBox" layoutX="7.0" layoutY="190.0" prefHeight="25.0" prefWidth="177.0" />
-                        <DatePicker fx:id="aptStartDate" layoutX="191.0" layoutY="70.0" prefHeight="25.0" prefWidth="178.0" />
-                        <DatePicker fx:id="aptEndDate" layoutX="191.0" layoutY="160.0" prefHeight="25.0" prefWidth="178.0" />
-                        <TextArea fx:id="aptDescBox" layoutX="191.0" layoutY="244.0" prefHeight="54.0" prefWidth="178.0" />
+                        <TextField fx:id="aptTitleBox" layoutX="7.0" layoutY="110.0" prefHeight="25.0" prefWidth="177.0" style="-fx-background-radius: 0;" />
+                        <TextField fx:id="aptLocationBox" layoutX="7.0" layoutY="150.0" prefHeight="25.0" prefWidth="177.0" style="-fx-background-radius: 0;" />
+                        <TextField fx:id="aptTypeBox" layoutX="7.0" layoutY="190.0" prefHeight="25.0" prefWidth="177.0" style="-fx-background-radius: 0;" />
+                        <ComboBox fx:id="aptContactBox" layoutX="7.0" layoutY="230.0" onAction="#contactGetIdByName" prefHeight="25.0" prefWidth="177.0" style="-fx-background-radius: 0;" />
+                        <ComboBox fx:id="aptCustomerBox" layoutX="7.0" layoutY="271.0" onAction="#customerGetIdByName" prefHeight="25.0" prefWidth="177.0" style="-fx-background-radius: 0;" />
+                        <DatePicker fx:id="aptStartDate" layoutX="191.0" layoutY="70.0" prefHeight="25.0" prefWidth="178.0" style="-fx-background-radius: 0;" />
+                        <TextField fx:id="aptStartHrs" layoutX="191.0" layoutY="111.0" prefHeight="25.0" prefWidth="86.0" style="-fx-background-radius: 0;" />
+                        <TextField fx:id="aptStartMin" layoutX="285.0" layoutY="111.0" prefHeight="25.0" prefWidth="85.0" style="-fx-background-radius: 0;" />
+                        <DatePicker fx:id="aptEndDate" layoutX="191.0" layoutY="160.0" prefHeight="25.0" prefWidth="178.0" style="-fx-background-radius: 0;" />
+                        <TextField fx:id="aptEndHrs" layoutX="191.0" layoutY="203.0" prefHeight="25.0" prefWidth="86.0" style="-fx-background-radius: 0;" />
+                        <TextField fx:id="aptEndMin" layoutX="284.0" layoutY="203.0" prefHeight="25.0" prefWidth="85.0" style="-fx-background-radius: 0;" />
+                        <TextArea fx:id="aptDescBox" layoutX="191.0" layoutY="244.0" prefHeight="54.0" prefWidth="178.0" style="-fx-background-radius: 0;" />
                         <Button fx:id="aptSubmitButton" layoutX="190.0" layoutY="306.0" mnemonicParsing="false" onAction="#submitAptButtonClicked" prefHeight="25.0" prefWidth="81.0" style="-fx-background-radius: 0;" text="Submit" />
-                        <TextField fx:id="aptIdBox" editable="false" focusTraversable="false" layoutX="7.0" layoutY="70.0" prefHeight="25.0" prefWidth="105.0" />
+                        <TextField fx:id="aptIdBox" editable="false" focusTraversable="false" layoutX="7.0" layoutY="70.0" prefHeight="25.0" prefWidth="105.0" style="-fx-background-radius: 0;" />
                         <Label fx:id="addAptLabel" alignment="CENTER" focusTraversable="false" layoutX="-2.0" layoutY="12.0" prefHeight="38.0" prefWidth="383.0" text="New Appointment" textFill="WHITE">
                            <font>
                               <Font name="Cascadia Code Regular" size="31.0" />
@@ -170,7 +230,7 @@
                               <Font name="System Bold" size="12.0" />
                            </font>
                         </Label>
-                        <TextField fx:id="aptUserIdBox" focusTraversable="false" layoutX="117.0" layoutY="70.0" prefHeight="25.0" prefWidth="67.0" />
+                        <TextField fx:id="aptUserIdBox" focusTraversable="false" layoutX="117.0" layoutY="70.0" prefHeight="25.0" prefWidth="67.0" style="-fx-background-radius: 0;" />
                         <Label fx:id="aptCustomerNameLabel" focusTraversable="false" layoutX="11.0" layoutY="255.0" text="Customer:" textFill="WHITE">
                            <font>
                               <Font name="System Bold" size="12.0" />
@@ -197,8 +257,6 @@
                            </font>
                         </Label>
                         <Button fx:id="aptCancelButton" layoutX="104.0" layoutY="306.0" mnemonicParsing="false" onAction="#cancelAptButtonClicked" prefHeight="25.0" prefWidth="81.0" style="-fx-background-radius: 0;" text="Cancel" />
-                        <ComboBox fx:id="aptContactBox" layoutX="7.0" layoutY="230.0" onAction="#contactGetIdByName" prefHeight="25.0" prefWidth="177.0" />
-                        <ComboBox fx:id="aptCustomerBox" layoutX="7.0" layoutY="271.0" onAction="#customerGetIdByName" prefHeight="25.0" prefWidth="177.0" />
                         <Label fx:id="aptCustomerIdLabel" focusTraversable="false" layoutX="154.0" layoutY="255.0" text="0" textFill="WHITE">
                            <font>
                               <Font name="System Bold" size="12.0" />
@@ -250,12 +308,8 @@
                               <Font name="System Bold" size="12.0" />
                            </font>
                         </Label>
-                        <TextField fx:id="aptStartHrs" layoutX="191.0" layoutY="111.0" prefHeight="25.0" prefWidth="86.0" />
-                        <TextField fx:id="aptStartMin" layoutX="285.0" layoutY="111.0" prefHeight="25.0" prefWidth="85.0" />
                      </children>
                   </Group>
-                  <TextField fx:id="aptEndHrs" layoutX="479.0" layoutY="278.0" prefHeight="25.0" prefWidth="86.0" />
-                  <TextField fx:id="aptEndMin" layoutX="573.0" layoutY="278.0" prefHeight="25.0" prefWidth="85.0" />
                </children>
             </AnchorPane>
             <AnchorPane fx:id="loginBox" prefHeight="200.0" prefWidth="200.0">
@@ -264,13 +318,13 @@
                      <children>
                         <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#545454" height="176.0" stroke="WHITE" strokeType="INSIDE" width="263.0" />
                         <Button fx:id="loginButton" layoutX="91.0" layoutY="123.0" mnemonicParsing="false" onAction="#logInButtonClicked" prefHeight="25.0" prefWidth="81.0" style="-fx-background-radius: 0;" text="Login" />
-                        <TextField fx:id="userName" layoutX="44.0" layoutY="62.0" prefHeight="25.0" prefWidth="177.0" promptText="Username" />
+                        <TextField fx:id="userName" layoutX="44.0" layoutY="62.0" prefHeight="25.0" prefWidth="177.0" promptText="Username" style="-fx-background-radius: 0;" />
                         <Label fx:id="loginLabel" layoutX="28.0" layoutY="9.0" text="Login" textFill="WHITE">
                            <font>
                               <Font name="Cascadia Code Regular" size="37.0" />
                            </font>
                         </Label>
-                        <PasswordField fx:id="passString" layoutX="44.0" layoutY="92.0" prefHeight="25.0" prefWidth="177.0" promptText="Password" />
+                        <PasswordField fx:id="passString" layoutX="44.0" layoutY="92.0" prefHeight="25.0" prefWidth="177.0" promptText="Password" style="-fx-background-radius: 0;" />
                         <Label fx:id="locationLabel" layoutX="7.0" layoutY="159.0" text="Curent Location: Current Location" textFill="WHITE">
                            <font>
                               <Font name="System Bold" size="10.0" />
