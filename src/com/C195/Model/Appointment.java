@@ -6,6 +6,7 @@ import javafx.collections.ObservableList;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.Date;
 
 import static com.C195.helper.JDBC.connection;
@@ -13,10 +14,10 @@ import static com.C195.helper.JDBC.connection;
 public class Appointment {
     private int aptId, customerId, userId, contactId;
     private String aptTitle, aptDescription, aptLocation, aptType, aptCreatedBy, aptLastUpdatedBy, contactString;
-    private Date aptStartDateTime,aptEndDateTime, aptCreationDate, aptLastUpdatedDate;
+    private Timestamp aptStartDateTime,aptEndDateTime, aptCreationDate, aptLastUpdatedDate;
     private static ObservableList<Appointment> allApts = FXCollections.observableArrayList();
 
-    public Appointment(int aptId, String aptTitle, String aptDescription, String aptLocation, String aptType,Date aptStartDateTime, Date aptEndDateTime, Date aptCreationDate, String aptCreatedBy, Date aptLastUpdatedDate, String lastUpdatedBy, Integer customerId, Integer userId, Integer contactId, String contactString) {
+    public Appointment(int aptId, String aptTitle, String aptDescription, String aptLocation, String aptType, Timestamp aptStartDateTime, Timestamp aptEndDateTime, Timestamp aptCreationDate, String aptCreatedBy, Timestamp aptLastUpdatedDate, String lastUpdatedBy, Integer customerId, Integer userId, Integer contactId, String contactString) {
         this.aptId = aptId;
         this.aptTitle = aptTitle;
         this.aptDescription = aptDescription;
@@ -46,16 +47,16 @@ public class Appointment {
     public void setAptLocation(String aptLocation) {this.aptLocation = aptLocation;}
     public String getAptType() {return aptType;}
     public void setAptType() {this.aptType = aptType;}
-    public Date getAptStartDateTime() {return aptStartDateTime;}
-    public void setAptStartDateTime(Date aptStartDateTime) {this.aptStartDateTime = aptStartDateTime;}
-    public Date getAptEndDateTime() {return aptEndDateTime;}
-    public void setAptEndDateTime(Date aptEndDateTime) {this.aptEndDateTime = aptEndDateTime;}
-    public Date getAptCreationDate() {return aptCreationDate;}
-    public void setAptCreationDate(Date aptCreationDate) {this.aptCreationDate = aptCreationDate;}
+    public Timestamp getAptStartDateTime() {return aptStartDateTime;}
+    public void setAptStartDateTime(Timestamp aptStartDateTime) {this.aptStartDateTime = aptStartDateTime;}
+    public Timestamp getAptEndDateTime() {return aptEndDateTime;}
+    public void setAptEndDateTime(Timestamp aptEndDateTime) {this.aptEndDateTime = aptEndDateTime;}
+    public Timestamp getAptCreationDate() {return aptCreationDate;}
+    public void setAptCreationDate(Timestamp aptCreationDate) {this.aptCreationDate = aptCreationDate;}
     public String getAptCreatedBy() {return aptCreatedBy;}
     public void setAptCreatedBy(String aptCreatedBy) {this.aptCreatedBy = aptCreatedBy;}
-    public Date getAptLastUpdatedDate() {return aptLastUpdatedDate;}
-    public void setAptLastUpdatedDate(Date aptLastUpdatedDate) {this.aptLastUpdatedDate = aptLastUpdatedDate;}
+    public Timestamp getAptLastUpdatedDate() {return aptLastUpdatedDate;}
+    public void setAptLastUpdatedDate(Timestamp aptLastUpdatedDate) {this.aptLastUpdatedDate = aptLastUpdatedDate;}
     public String getAptLastUpdatedBy() {return aptLastUpdatedBy;}
     public void setAptLastUpdatedBy(String aptLastUpdatedBy) {this.aptLastUpdatedBy = aptLastUpdatedBy;}
     public int getCustomerId() {return customerId;}
@@ -86,18 +87,18 @@ public class Appointment {
         }
     }
 
-    public static int insertApt(int aptId, String aptTitle, String aptDescription, String aptLocation, String aptType, Date aptStartDateTime, Date aptEndDateTime, Date aptCreationDate, String aptCreatedBy, Date aptLastUpdatedDate, String aptlastUpdatedBy, Integer customerId, Integer userId, Integer contactId) throws SQLException {
+    public static int insertApt(int aptId, String aptTitle, String aptDescription, String aptLocation, String aptType, Timestamp aptStartDateTime, Timestamp aptEndDateTime, Timestamp aptCreationDate, String aptCreatedBy, Timestamp aptLastUpdatedDate, String aptlastUpdatedBy, Integer customerId, Integer userId, Integer contactId) throws SQLException {
         String sql = "INSERT INTO customers (Title, Description, Location, Type, Start, End, Create_Date, Created_By, Last_Update, Last_Updated_By, Customer_ID, User_ID, Contact_ID) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         PreparedStatement ps = connection.prepareStatement(sql);
         ps.setString(1, aptTitle);
         ps.setString(2, aptDescription);
         ps.setString(3, aptLocation);
         ps.setString(4, aptType);
-        ps.setDate(5, (java.sql.Date) aptStartDateTime);
-        ps.setDate(6, (java.sql.Date) aptEndDateTime);
-        ps.setDate(7, (java.sql.Date) aptCreationDate);
+        ps.setTimestamp(5, aptStartDateTime);
+        ps.setTimestamp(6, aptEndDateTime);
+        ps.setTimestamp(7, aptCreationDate);
         ps.setString(8, aptCreatedBy);
-        ps.setDate(9, (java.sql.Date) aptLastUpdatedDate);
+        ps.setTimestamp(9, aptLastUpdatedDate);
         ps.setString(10, aptlastUpdatedBy);
         ps.setInt(11, customerId);
         ps.setInt(12, userId);

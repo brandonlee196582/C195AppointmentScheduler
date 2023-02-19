@@ -1,11 +1,13 @@
 package com.C195.Model;
 
+import com.C195.helper.DateTimeProcessing;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -95,12 +97,14 @@ public class Customer {
         }
     }
 
-    public static int insertCustomer(int id, String name, String address, String postalCode, String phone, int divisionId, String user, String menu) throws SQLException {
-        java.sql.Date createDate, lastUpdateDate;
+    public static int insertCustomer(int id, String name, String address, String postalCode, String phone, int divisionId, String user, String menu, int selectedCustomerId) throws SQLException {
+
+        //returns and array of current local, UTC, and eastern time, [0 = local, 1 = UTC, 2 = eastern]
+        Timestamp[] timestamps = DateTimeProcessing.zoneDateTimeToTimestamp();
+
+        Timestamp timestampUtc = timestamps[1];
+
         if (menu == "Add Customer") {
-            java.util.Date utilDate = new java.util.Date();
-            createDate = new java.sql.Date(utilDate.getTime());
-            lastUpdateDate = new java.sql.Date(utilDate.getTime());
 
             String sql = "INSERT INTO customers (Customer_Name, Address, Postal_Code, Phone, Create_Date, Created_By, Last_Update, Last_Updated_By, Division_ID) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)";
             PreparedStatement ps = connection.prepareStatement(sql);
@@ -108,18 +112,23 @@ public class Customer {
             ps.setString(2, address);
             ps.setString(3, postalCode);
             ps.setString(4, phone);
-            ps.setDate(5, createDate);
+            ps.setTimestamp(5, timestampUtc);
             ps.setString(6,user);
-            ps.setDate(7, lastUpdateDate);
+            ps.setTimestamp(7, timestampUtc);
             ps.setString(8,user);
             ps.setInt(9, divisionId);
             int rowsAffected = ps.executeUpdate();
             return rowsAffected;
         } else {
-            System.out.println("no done yet");
+            //UPDATE client_schedule.customers SET Customer_Name='brandon' WHERE Customer_ID=36;
+            String sql = "UPDATE client_schedule.customers SET Customer_Name='" + name + "', Address='" + address + "', Postal_Code='" + postalCode + "', Phone='" + phone + "', Last_Update='" + timestampUtc + "', Last_Updated_By='" + user + "', Division_ID=" + divisionId + " WHERE Customer_ID=" + selectedCustomerId;
+            PreparedStatement ps = connection.prepareStatement(sql);
+            int rowsAffected = ps.executeUpdate();
+            return rowsAffected;
         }
-        return 0;
     }
+
+
 
     public static void remeoveCustomer(int id) throws SQLException {
             String sql = "DELETE FROM client_schedule.customers WHERE Customer_ID=" + id;

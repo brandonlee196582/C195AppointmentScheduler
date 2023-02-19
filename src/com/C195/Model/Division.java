@@ -73,6 +73,16 @@ public class Division {
         return name.get(0).toString();
     }
 
+    public static List getAllDivisionNamesByCountry(int country) {
+        List nameList = new ArrayList();
+        allDivisions.forEach(object -> {
+            if (object.getCountryId() == country) {
+                nameList.add(object.getDivisionName());
+            }
+        });
+        return nameList;
+    }
+
     public static int  getCountryIdByDivisionId(int searchId) {
         List id = new ArrayList();
         allDivisions.forEach(object -> {

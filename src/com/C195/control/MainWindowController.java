@@ -1,9 +1,12 @@
 package com.C195.control;
 
 import com.C195.Model.*;
+import com.C195.helper.DateTimeProcessing;
 import com.C195.helper.JDBC;
+import com.C195.helper.promptHelper;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -12,17 +15,12 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 import java.net.URL;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.ParseException;
 import java.time.ZoneId;
 import java.util.*;
 
-import static com.C195.helper.JDBC.connection;
-
 public class MainWindowController implements Initializable {
-
-
 
     //Table view window controls and labels
     @FXML AnchorPane tableViews;
@@ -68,243 +66,7 @@ public class MainWindowController implements Initializable {
     ResourceBundle rb1;
 
 
-    @FXML
-    protected void logOutButtonClick(ActionEvent actionEvent) {
-        stage = (Stage) ((Button)actionEvent.getSource()).getScene().getWindow();
-        userName.setText("");
-        passString.setText("");
-        tableViews.setDisable(true);
-        loginBox.setVisible(true);
-        logOutButton.setDisable(true);
-        aptTableView.getItems().clear();
-        customerTableView.getItems().clear();
-        JDBC.closeConnection();
-
-        stage.setOnCloseRequest(event -> {
-            Platform.exit();
-        });
-    }
-
-    public void addAptButtonClicked(ActionEvent actionEvent) throws SQLException {
-        tableViews.setDisable(true);
-        logOutButton.setDisable(true);
-        addUpdateAptBox.setVisible(true);
-        addAptLabel.setText("Add Appointment");
-
-        aptCustomerBox.setItems(FXCollections.observableList(Customer.getAllCustomerNames()));
-        aptContactBox.setItems(FXCollections.observableList(Contact.getAllContactNames()));
-    }
-
-    public void updateAptButtonClicked(ActionEvent actionEvent) throws SQLException {
-
-        Appointment selectedApt = aptTableView.getSelectionModel().getSelectedItem();
-        if (selectedApt == null) {
-            MainWindowController.errorDialog("No appointment selected", "Please select an appointment to update.");
-            return;
-        }
-
-        tableViews.setDisable(true);
-        logOutButton.setDisable(true);
-        addUpdateAptBox.setVisible(true);
-        addAptLabel.setText("Update Appointment");
-
-        setAppointment(selectedApt);
-
-        aptCustomerBox.setItems(FXCollections.observableList(Customer.getAllCustomerNames()));
-        aptContactBox.setItems(FXCollections.observableList(Contact.getAllContactNames()));
-    }
-
-    public void setAppointment(Appointment selectedApt) {
-        aptIdBox.setText(Integer.toString(selectedApt.getAptId()));
-        aptUserIdBox.setText(Integer.toString(selectedApt.getUserId()));
-        aptTitleBox.setText(selectedApt.getAptTitle());
-        aptLocationBox.setText(selectedApt.getAptLocation());
-        aptTypeBox.setText(selectedApt.getAptType());
-        aptContactBox.setValue(Contact.getContactNameById(selectedApt.getContactId()));
-        aptCustomerBox.setValue(Customer.getCustomerNameById(selectedApt.getCustomerId()));
-        aptContactIdLabel.setText(Integer.toString(selectedApt.getContactId()));
-        aptCustomerIdLabel.setText(Integer.toString(selectedApt.getCustomerId()));
-        String[] startDateArray = processTime(selectedApt.getAptStartDateTime());
-        aptStartDate.getEditor().setText(startDateArray[0]);
-        aptStartHrs.setText(startDateArray[1]);
-        aptStartMin.setText(startDateArray[2]);
-        String[] endDateArray = processTime(selectedApt.getAptEndDateTime());
-        aptEndDate.getEditor().setText(endDateArray[0]);
-        aptEndHrs.setText(endDateArray[1]);
-        aptEndMin.setText(endDateArray[2]);
-        aptDescBox.setText(selectedApt.getAptDescription());
-    }
-    public void setCustomer(Customer selectedCustomer) {
-        customerIdBox.setText(Integer.toString(selectedCustomer.getCustomerId()));
-        customerNameBox.setText(selectedCustomer.getCustomerName());
-        customerAddressBox.setText(selectedCustomer.getAddress());
-        addUpdateProvinceIdLabel.setText(Integer.toString(selectedCustomer.getDivisionId()));
-        stateProvinceBox.setValue(Division.getDivisionNameById(selectedCustomer.getDivisionId()));
-        int countryId = Division.getCountryIdByDivisionId(selectedCustomer.getDivisionId());
-        addUpdateCountryIdLabel.setText(Integer.toString(countryId));
-        countryBox.setValue(Country.getCountryNameById(countryId));
-        customerPostalCodeBox.setText(selectedCustomer.getPostalCode());
-        customerPhoneNumberBox.setText(selectedCustomer.getPhone());
-    }
-
-    public String[] processTime (Date date) {
-        String[] dateSplit = date.toString().split(" ");
-        String[] timeSplit = dateSplit[1].split(":");
-        String[] dateArray = new String[] {dateSplit[0], timeSplit[0], timeSplit[1], timeSplit[2]};
-
-        return dateArray;
-    }
-
-    public void contactGetIdByName(ActionEvent actionEvent) throws SQLException {
-        int aptAddUpdateContactId = 0;
-        Object contactName = (String) aptContactBox.getValue();
-        aptAddUpdateContactId = Contact.getContactIdByName((String) contactName);
-        aptContactIdLabel.setText(String.valueOf(aptAddUpdateContactId));
-    }
-
-    public void customerGetIdByName(ActionEvent actionEvent) throws SQLException {
-        int aptAddUpdateCustomerId = 0;
-        Object customerName = (String) aptCustomerBox.getValue();
-        aptAddUpdateCustomerId = Customer.getCustomerIdByName((String) customerName);
-        aptCustomerIdLabel.setText(String.valueOf(aptAddUpdateCustomerId));
-    }
-
-    public void setDivisionCountry(ActionEvent actionEvent) throws SQLException {
-        int divisionId, countryId;
-
-        countryBox.setValue("");
-        addUpdateCountryIdLabel.setText("");
-
-        divisionId = Division.getDivisionIdByName((String) stateProvinceBox.getValue());
-        addUpdateProvinceIdLabel.setText(String.valueOf(divisionId));
-
-        countryId  = Division.getCountryIdByDivisionId(divisionId);
-        countryBox.setValue(Country.getCountryNameById(countryId));
-        addUpdateCountryIdLabel.setText(Integer.toString(countryId));
-    }
-
-    public void setCountry(ActionEvent actionEvent) throws SQLException {
-        int countryId;
-        countryId = Country.getCountryIdByName((String) countryBox.getValue());
-        addUpdateCountryIdLabel.setText(Integer.toString(countryId));
-    }
-
-    public void removeAptButtonClicked(ActionEvent actionEvent) throws SQLException {
-        System.out.println("removed appointment");
-    }
-
-    public void addCustomerButtonClicked(ActionEvent actionEvent) throws SQLException {
-        tableViews.setDisable(true);
-        logOutButton.setDisable(true);
-        addUpdateCustomer.setVisible(true);
-        customerAddUpdateLabel.setText("Add Customer");
-
-        stateProvinceBox.setItems(FXCollections.observableList(Division.getAllDivisionNames()));
-        countryBox.setItems(FXCollections.observableList(Country.getAllCountryNames()));
-    }
-
-    public void updateCustomerButtonClicked(ActionEvent actionEvent) throws SQLException {
-        Customer selectedCustomer = customerTableView.getSelectionModel().getSelectedItem();
-
-        tableViews.setDisable(true);
-        logOutButton.setDisable(true);
-        addUpdateCustomer.setVisible(true);
-        customerAddUpdateLabel.setText("Update Customer");
-
-        setCustomer(selectedCustomer);
-
-        stateProvinceBox.setItems(FXCollections.observableList(Division.getAllDivisionNames()));
-        countryBox.setItems(FXCollections.observableList(Country.getAllCountryNames()));
-    }
-
-    public void removeCustomerButtonClicked(ActionEvent actionEvent) throws SQLException {
-
-        Customer selectedCustomer = customerTableView.getSelectionModel().getSelectedItem();
-
-        Customer.remeoveCustomer(selectedCustomer.getCustomerId());
-        customerTableView.getItems().clear();
-        Customer.getDatabaseCustomers();
-
-    }
-
-    public void cancelCustomerButtonClicked(ActionEvent actionEvent) throws SQLException {
-        tableViews.setDisable(false);
-        logOutButton.setDisable(false);
-        addUpdateCustomer.setVisible(false);
-
-        cleanCustomerForm();
-    }
-
-    public void submitCustomerButtonClicked(ActionEvent actionEvent) throws SQLException {
-        int id = 0, divisionId;
-        String name, address, postalCode, phoneNumber, menu;
-        System.out.println("added customer");
-        tableViews.setDisable(false);
-        logOutButton.setDisable(false);
-        addUpdateCustomer.setVisible(false);
-
-        if (customerIdBox.getText() != "") {
-            id = Integer.parseInt(customerIdBox.getText());
-        }
-        name = customerNameBox.getText();
-        address = customerAddressBox.getText();
-        divisionId = Integer.parseInt(addUpdateProvinceIdLabel.getText());
-        postalCode = customerPostalCodeBox.getText();
-        phoneNumber = customerPhoneNumberBox.getText();
-        menu = customerAddUpdateLabel.getText();
-
-        Customer.insertCustomer(id,name,address,postalCode,phoneNumber,divisionId,userName.getText(),menu);
-        customerTableView.getItems().clear();
-        Customer.getDatabaseCustomers();
-
-        cleanCustomerForm();
-    }
-
-    public void cleanAptForm() {
-        aptIdBox.setText("");
-        aptUserIdBox.setText("");
-        aptTitleBox.setText("");
-        aptLocationBox.setText("");
-        aptTypeBox.setText("");
-        aptContactBox.setValue("");
-        aptCustomerBox.setValue("");
-        aptContactIdLabel.setText("");
-        aptCustomerIdLabel.setText("");
-        aptStartDate.getEditor().clear();
-        aptStartHrs.setText("");
-        aptStartMin.setText("");
-        aptEndDate.getEditor().clear();
-        aptEndHrs.setText("");
-        aptEndMin.setText("");
-        aptDescBox.setText("");
-    }
-
-    public void cleanCustomerForm() {
-        customerIdBox.setText("");
-        customerAddressBox.setText("");
-        stateProvinceBox.setValue("");
-        countryBox.setValue("");
-        customerPostalCodeBox.setText("");
-        customerPhoneNumberBox.setText("");
-    }
-
-    public void submitAptButtonClicked(ActionEvent actionEvent) throws SQLException {
-        System.out.println("added appointment");
-        tableViews.setDisable(false);
-        logOutButton.setDisable(false);
-        addUpdateAptBox.setVisible(false);
-
-        cleanAptForm();
-    }
-
-    public void cancelAptButtonClicked(ActionEvent actionEvent) throws SQLException {
-        tableViews.setDisable(false);
-        logOutButton.setDisable(false);
-        addUpdateAptBox.setVisible(false);
-
-        cleanAptForm();
-    }
-
+    //Login Window Functions
     public void logInButtonClicked(ActionEvent actionEvent) throws SQLException {
         stage = (Stage) ((Button)actionEvent.getSource()).getScene().getWindow();
         String userNameText = userName.getText();
@@ -364,15 +126,303 @@ public class MainWindowController implements Initializable {
             });
         }
     }
+    //----------------------
 
-    static void errorDialog(String title, String content){
-        Alert alert = new Alert(Alert.AlertType.ERROR);
-        alert.setTitle(title);
-        alert.setHeaderText("Error");
-        alert.setContentText(content);
-        Optional<ButtonType> result = alert.showAndWait();
-        result.get();
+    //Main Window Functions
+    @FXML
+    protected void logOutButtonClick(ActionEvent actionEvent) {
+        stage = (Stage) ((Button)actionEvent.getSource()).getScene().getWindow();
+        userName.setText("");
+        passString.setText("");
+        tableViews.setDisable(true);
+        loginBox.setVisible(true);
+        logOutButton.setDisable(true);
+        aptTableView.getItems().clear();
+        customerTableView.getItems().clear();
+        JDBC.closeConnection();
+
+        stage.setOnCloseRequest(event -> {
+            Platform.exit();
+        });
     }
+
+    public void addAptButtonClicked(ActionEvent actionEvent) throws SQLException {
+        tableViews.setDisable(true);
+        logOutButton.setDisable(true);
+        addUpdateAptBox.setVisible(true);
+        addAptLabel.setText("Add Appointment");
+
+        aptCustomerBox.setItems(FXCollections.observableList(Customer.getAllCustomerNames()));
+        aptContactBox.setItems(FXCollections.observableList(Contact.getAllContactNames()));
+    }
+
+    public void updateAptButtonClicked(ActionEvent actionEvent) throws SQLException {
+
+        Appointment selectedApt = aptTableView.getSelectionModel().getSelectedItem();
+        if (selectedApt == null) {
+            promptHelper.errorDialog("No appointment selected", "Please select an appointment to update.");
+            return;
+        }
+
+        tableViews.setDisable(true);
+        logOutButton.setDisable(true);
+        addUpdateAptBox.setVisible(true);
+        addAptLabel.setText("Update Appointment");
+
+        setAppointment(selectedApt);
+
+        aptCustomerBox.setItems(FXCollections.observableList(Customer.getAllCustomerNames()));
+        aptContactBox.setItems(FXCollections.observableList(Contact.getAllContactNames()));
+    }
+
+    public void removeAptButtonClicked(ActionEvent actionEvent) throws SQLException, ParseException {
+
+
+
+
+        System.out.println("removed appointment");
+    }
+
+    public void addCustomerButtonClicked(ActionEvent actionEvent) throws SQLException {
+        tableViews.setDisable(true);
+        logOutButton.setDisable(true);
+        addUpdateCustomer.setVisible(true);
+        customerAddUpdateLabel.setText("Add Customer");
+
+        stateProvinceBox.setItems(FXCollections.observableList(Division.getAllDivisionNames()));
+        countryBox.setItems(FXCollections.observableList(Country.getAllCountryNames()));
+    }
+
+    public void updateCustomerButtonClicked(ActionEvent actionEvent) throws SQLException {
+        Customer selectedCustomer = customerTableView.getSelectionModel().getSelectedItem();
+
+        if (selectedCustomer == null) {
+            promptHelper.errorDialog("No customer selected", "Please select a customer to update.");
+            return;
+        }
+
+        tableViews.setDisable(true);
+        logOutButton.setDisable(true);
+        addUpdateCustomer.setVisible(true);
+        customerAddUpdateLabel.setText("Update Customer");
+
+        setCustomer(selectedCustomer);
+
+        stateProvinceBox.setItems(FXCollections.observableList(Division.getAllDivisionNames()));
+        countryBox.setItems(FXCollections.observableList(Country.getAllCountryNames()));
+    }
+
+    public void removeCustomerButtonClicked(ActionEvent actionEvent) throws SQLException {
+
+        Customer selectedCustomer = customerTableView.getSelectionModel().getSelectedItem();
+        String appointmentsScheduled = " | ";
+
+        for (Appointment apt : Appointment.getAllapts()) {
+            if (apt.getCustomerId() == selectedCustomer.getCustomerId()) {
+                appointmentsScheduled = appointmentsScheduled + apt.getAptId() + " | ";
+            }
+        }
+        if (appointmentsScheduled != " | ") {
+            promptHelper.errorDialog("Unable to remove customer","Customers with scheduled appointments can't be remove. Customer is scheduled for the following appointments: " + appointmentsScheduled);
+        } else {
+            if (promptHelper.confirmPrompt("Remove Customer Confirmation","Are you sure you would like to remove " + selectedCustomer.getCustomerName() + "'s customer record?")) {
+
+                Customer.remeoveCustomer(selectedCustomer.getCustomerId());
+                customerTableView.getItems().clear();
+                Customer.getDatabaseCustomers();
+            }
+        }
+    }
+
+    //----------MainWindow------------
+
+    //Add-Update Appointment Window Functions
+
+    public void submitAptButtonClicked(ActionEvent actionEvent) throws SQLException {
+        System.out.println("added appointment");
+        tableViews.setDisable(false);
+        logOutButton.setDisable(false);
+        addUpdateAptBox.setVisible(false);
+
+        cleanAptForm();
+    }
+
+    public void cancelAptButtonClicked(ActionEvent actionEvent) throws SQLException {
+        tableViews.setDisable(false);
+        logOutButton.setDisable(false);
+        addUpdateAptBox.setVisible(false);
+
+        cleanAptForm();
+    }
+
+    public void setAppointment(Appointment selectedApt) {
+        aptIdBox.setText(Integer.toString(selectedApt.getAptId()));
+        aptUserIdBox.setText(Integer.toString(selectedApt.getUserId()));
+        aptTitleBox.setText(selectedApt.getAptTitle());
+        aptLocationBox.setText(selectedApt.getAptLocation());
+        aptTypeBox.setText(selectedApt.getAptType());
+        aptContactBox.setValue(Contact.getContactNameById(selectedApt.getContactId()));
+        aptCustomerBox.setValue(Customer.getCustomerNameById(selectedApt.getCustomerId()));
+        aptContactIdLabel.setText(Integer.toString(selectedApt.getContactId()));
+        aptCustomerIdLabel.setText(Integer.toString(selectedApt.getCustomerId()));
+        String[] startDateArray = DateTimeProcessing.splitDateTime(selectedApt.getAptStartDateTime());
+        aptStartDate.getEditor().setText(startDateArray[0]);
+        aptStartHrs.setText(startDateArray[1]);
+        aptStartMin.setText(startDateArray[2]);
+        String[] endDateArray = DateTimeProcessing.splitDateTime(selectedApt.getAptEndDateTime());
+        aptEndDate.getEditor().setText(endDateArray[0]);
+        aptEndHrs.setText(endDateArray[1]);
+        aptEndMin.setText(endDateArray[2]);
+        aptDescBox.setText(selectedApt.getAptDescription());
+    }
+
+    public void contactGetIdByName(ActionEvent actionEvent) throws SQLException {
+        int aptAddUpdateContactId = 0;
+        Object contactName = (String) aptContactBox.getValue();
+        aptAddUpdateContactId = Contact.getContactIdByName((String) contactName);
+        aptContactIdLabel.setText(String.valueOf(aptAddUpdateContactId));
+    }
+
+    public void customerGetIdByName(ActionEvent actionEvent) throws SQLException {
+        int aptAddUpdateCustomerId = 0;
+        Object customerName = (String) aptCustomerBox.getValue();
+        aptAddUpdateCustomerId = Customer.getCustomerIdByName((String) customerName);
+        aptCustomerIdLabel.setText(String.valueOf(aptAddUpdateCustomerId));
+    }
+
+    public void cleanAptForm() {
+        aptIdBox.setText("");
+        aptUserIdBox.setText("");
+        aptTitleBox.setText("");
+        aptLocationBox.setText("");
+        aptTypeBox.setText("");
+        aptContactBox.setValue("");
+        aptCustomerBox.setValue("");
+        aptContactIdLabel.setText("");
+        aptCustomerIdLabel.setText("");
+        aptStartDate.getEditor().clear();
+        aptStartHrs.setText("");
+        aptStartMin.setText("");
+        aptEndDate.getEditor().clear();
+        aptEndHrs.setText("");
+        aptEndMin.setText("");
+        aptDescBox.setText("");
+    }
+
+    //----------AppointmentWindow------------
+
+    //Add-Update Customer Window Functions
+
+    public void cancelCustomerButtonClicked(ActionEvent actionEvent) throws SQLException {
+        tableViews.setDisable(false);
+        logOutButton.setDisable(false);
+        addUpdateCustomer.setVisible(false);
+
+        cleanCustomerForm();
+    }
+
+    public void submitCustomerButtonClicked(ActionEvent actionEvent) throws SQLException {
+        int id = 0, divisionId = 0, errorCk = 0;
+        String name, address, postalCode, phoneNumber, menu;
+
+
+        if (customerIdBox.getText() != "") {
+            id = Integer.parseInt(customerIdBox.getText());
+        }
+        name = customerNameBox.getText();
+        System.out.println(name.split(" ").length);
+        if (name.split(" ").length == 1) {
+            promptHelper.errorDialog("Input validation error!","You must enter a first and last name.");
+            errorCk++;
+        }
+        address = customerAddressBox.getText();
+        if (address.split(",").length < 2) {
+            promptHelper.errorDialog("Input validation error!","Please check the address format and try again.");
+            errorCk++;
+        }
+        if (Integer.parseInt(addUpdateProvinceIdLabel.getText()) > 1) {
+            divisionId = Integer.parseInt(addUpdateProvinceIdLabel.getText());
+        } else {
+            promptHelper.errorDialog("Input validation error!","State or Province is required");
+            errorCk++;
+        }
+        postalCode = customerPostalCodeBox.getText();
+        if (Objects.equals(postalCode, "")) {
+            promptHelper.errorDialog("Input validation error!","The postal code is required");
+            errorCk++;
+        }
+        phoneNumber = customerPhoneNumberBox.getText();
+        if (phoneNumber == "") {
+            promptHelper.errorDialog("Input validation error!","A phone number is required");
+            errorCk++;
+        }
+        menu = customerAddUpdateLabel.getText();
+
+        Customer selectedCustomer = customerTableView.getSelectionModel().getSelectedItem();
+
+        if (errorCk == 0) {
+            tableViews.setDisable(false);
+            logOutButton.setDisable(false);
+            addUpdateCustomer.setVisible(false);
+            if (selectedCustomer == null) {
+                Customer.insertCustomer(id,name,address,postalCode,phoneNumber,divisionId,userName.getText(),menu,0);
+            } else {
+                Customer.insertCustomer(id,name,address,postalCode,phoneNumber,divisionId,userName.getText(),menu,selectedCustomer.getCustomerId());
+            }
+            customerTableView.getItems().clear();
+            Customer.getDatabaseCustomers();
+
+            cleanCustomerForm();
+        }
+    }
+
+    public void setDivisionCountry(ActionEvent actionEvent) throws SQLException {
+        int divisionId, countryId;
+
+        countryBox.setValue("");
+        addUpdateCountryIdLabel.setText("");
+
+        divisionId = Division.getDivisionIdByName((String) stateProvinceBox.getValue());
+        addUpdateProvinceIdLabel.setText(String.valueOf(divisionId));
+
+        countryId  = Division.getCountryIdByDivisionId(divisionId);
+        countryBox.setValue(Country.getCountryNameById(countryId));
+        addUpdateCountryIdLabel.setText(Integer.toString(countryId));
+    }
+
+    public void setCountry(ActionEvent actionEvent) throws SQLException {
+        int countryId;
+        countryId = Country.getCountryIdByName((String) countryBox.getValue());
+        addUpdateCountryIdLabel.setText(Integer.toString(countryId));
+
+        stateProvinceBox.setItems(FXCollections.observableList(Division.getAllDivisionNamesByCountry(Integer.parseInt(addUpdateCountryIdLabel.getText()))));
+
+    }
+
+    public void setCustomer(Customer selectedCustomer) {
+        customerIdBox.setText(Integer.toString(selectedCustomer.getCustomerId()));
+        customerNameBox.setText(selectedCustomer.getCustomerName());
+        customerAddressBox.setText(selectedCustomer.getAddress());
+        addUpdateProvinceIdLabel.setText(Integer.toString(selectedCustomer.getDivisionId()));
+        stateProvinceBox.setValue(Division.getDivisionNameById(selectedCustomer.getDivisionId()));
+        int countryId = Division.getCountryIdByDivisionId(selectedCustomer.getDivisionId());
+        addUpdateCountryIdLabel.setText(Integer.toString(countryId));
+        countryBox.setValue(Country.getCountryNameById(countryId));
+        customerPostalCodeBox.setText(selectedCustomer.getPostalCode());
+        customerPhoneNumberBox.setText(selectedCustomer.getPhone());
+    }
+
+    public void cleanCustomerForm() {
+        customerIdBox.setText("");
+        customerNameBox.setText("");
+        customerAddressBox.setText("");
+        stateProvinceBox.setValue("");
+        countryBox.setValue("");
+        customerPostalCodeBox.setText("");
+        customerPhoneNumberBox.setText("");
+    }
+
+    //----------CustomerWindow------------
 
     public void initialize(URL location, ResourceBundle resources) {
         systemZoneId = ZoneId.systemDefault();
@@ -380,8 +430,6 @@ public class MainWindowController implements Initializable {
         frLocale = new Locale("fr", "FR");
         usLocale = new Locale("en", "US");
         sysLocale = Locale.getDefault();
-
-
 
         //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         userName.setText("sqlUser");

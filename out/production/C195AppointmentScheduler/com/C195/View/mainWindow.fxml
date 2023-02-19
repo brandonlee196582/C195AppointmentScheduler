@@ -92,7 +92,7 @@
                         <TextField fx:id="customerPostalCodeBox" layoutX="37.0" layoutY="247.0" prefHeight="25.0" prefWidth="216.0" />
                         <TextField fx:id="customerPhoneNumberBox" layoutX="37.0" layoutY="292.0" prefHeight="25.0" prefWidth="216.0" />
                         <Button fx:id="customerSubmitButton" layoutX="147.0" layoutY="327.0" mnemonicParsing="false" onAction="#submitCustomerButtonClicked" prefHeight="25.0" prefWidth="81.0" style="-fx-background-radius: 0;" text="Submit" />
-                        <TextField fx:id="customerIdBox" editable="false" focusTraversable="false" layoutX="37.0" layoutY="71.0" prefHeight="25.0" prefWidth="217.0" />
+                        <TextField fx:id="customerIdBox" editable="false" focusTraversable="false" layoutX="37.0" layoutY="71.0" prefHeight="25.0" prefWidth="217.0" promptText="Auto ID" />
                         <Label fx:id="customerAddUpdateLabel" alignment="CENTER" focusTraversable="false" layoutX="-2.0" layoutY="12.0" prefHeight="38.0" prefWidth="294.0" text="Update Customer" textFill="WHITE">
                            <font>
                               <Font name="Cascadia Code Regular" size="31.0" />
@@ -104,7 +104,7 @@
                               <Font name="System Bold" size="12.0" />
                            </font>
                         </Label>
-                        <Label fx:id="addUpdateCustomerAddressLabel" layoutX="41.0" layoutY="139.0" text="Address: (house#, Street, City)" textFill="WHITE">
+                        <Label fx:id="addUpdateCustomerAddressLabel" layoutX="41.0" layoutY="139.0" text="Address: (house# Street, City)" textFill="WHITE">
                            <font>
                               <Font name="System Bold" size="12.0" />
                            </font>
@@ -129,12 +129,12 @@
                               <Font name="System Bold" size="12.0" />
                            </font>
                         </Label>
-                        <Label fx:id="addUpdateProvinceIdLabel" layoutX="139.0" layoutY="184.0" text="ID#" textFill="WHITE">
+                        <Label fx:id="addUpdateProvinceIdLabel" layoutX="139.0" layoutY="184.0" text="0" textFill="WHITE">
                            <font>
                               <Font name="System Bold" size="12.0" />
                            </font>
                         </Label>
-                        <Label fx:id="addUpdateCountryIdLabel" layoutX="232.0" layoutY="184.0" text="ID#" textFill="WHITE">
+                        <Label fx:id="addUpdateCountryIdLabel" layoutX="232.0" layoutY="184.0" text="0" textFill="WHITE">
                            <font>
                               <Font name="System Bold" size="12.0" />
                            </font>
@@ -199,7 +199,7 @@
                         <Button fx:id="aptCancelButton" layoutX="104.0" layoutY="306.0" mnemonicParsing="false" onAction="#cancelAptButtonClicked" prefHeight="25.0" prefWidth="81.0" style="-fx-background-radius: 0;" text="Cancel" />
                         <ComboBox fx:id="aptContactBox" layoutX="7.0" layoutY="230.0" onAction="#contactGetIdByName" prefHeight="25.0" prefWidth="177.0" />
                         <ComboBox fx:id="aptCustomerBox" layoutX="7.0" layoutY="271.0" onAction="#customerGetIdByName" prefHeight="25.0" prefWidth="177.0" />
-                        <Label fx:id="aptCustomerIdLabel" focusTraversable="false" layoutX="154.0" layoutY="255.0" text="ID#" textFill="WHITE">
+                        <Label fx:id="aptCustomerIdLabel" focusTraversable="false" layoutX="154.0" layoutY="255.0" text="0" textFill="WHITE">
                            <font>
                               <Font name="System Bold" size="12.0" />
                            </font>
@@ -230,7 +230,7 @@
                               <Font name="System Bold" size="12.0" />
                            </font>
                         </Label>
-                        <Label fx:id="aptContactIdLabel" focusTraversable="false" layoutX="154.0" layoutY="214.0" text="ID#" textFill="WHITE">
+                        <Label fx:id="aptContactIdLabel" focusTraversable="false" layoutX="154.0" layoutY="214.0" text="0" textFill="WHITE">
                            <font>
                               <Font name="System Bold" size="12.0" />
                            </font>
