@@ -16,7 +16,9 @@ import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 import java.net.URL;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.text.ParseException;
+import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.*;
 
@@ -211,6 +213,7 @@ public class MainWindowController implements Initializable {
     public void updateAptButtonClicked(ActionEvent actionEvent) throws SQLException {
 
         Appointment selectedApt = aptTableView.getSelectionModel().getSelectedItem();
+
         if (selectedApt == null) {
             promptHelper.errorDialog("No appointment selected", "Please select an appointment to update.");
             return;
@@ -228,11 +231,15 @@ public class MainWindowController implements Initializable {
     }
 
     public void removeAptButtonClicked(ActionEvent actionEvent) throws SQLException, ParseException {
+        Appointment selectedapt = aptTableView.getSelectionModel().getSelectedItem();
 
+        if (promptHelper.confirmPrompt("Remove appointment Confirmation","Are you sure you would like to remove the following appointment ID#:" + selectedapt.getAptId() + ", " + selectedapt.getAptTitle() + "?")) {
 
+            Appointment.remeoveApt(selectedapt.getAptId());
+            aptTableView.getItems().clear();
+            Appointment.getDatabaseApts();
+        }
 
-
-        System.out.println("removed appointment");
     }
 
     public void addCustomerButtonClicked(ActionEvent actionEvent) throws SQLException {
@@ -430,24 +437,26 @@ public class MainWindowController implements Initializable {
     public void setDivisionCountry(ActionEvent actionEvent) throws SQLException {
         int divisionId, countryId;
 
-        countryBox.setValue("");
-        addUpdateCountryIdLabel.setText("");
-
         divisionId = Division.getDivisionIdByName((String) stateProvinceBox.getValue());
         addUpdateProvinceIdLabel.setText(String.valueOf(divisionId));
 
-        countryId  = Division.getCountryIdByDivisionId(divisionId);
-        countryBox.setValue(Country.getCountryNameById(countryId));
-        addUpdateCountryIdLabel.setText(Integer.toString(countryId));
+        if (addUpdateCountryIdLabel.getText().equals("0")) {
+            countryBox.setValue("");
+            addUpdateCountryIdLabel.setText("");
+
+            countryId = Division.getCountryIdByDivisionId(divisionId);
+            countryBox.setValue(Country.getCountryNameById(countryId));
+            addUpdateCountryIdLabel.setText(Integer.toString(countryId));
+        }
     }
 
     public void setCountry(ActionEvent actionEvent) throws SQLException {
         int countryId;
         countryId = Country.getCountryIdByName((String) countryBox.getValue());
         addUpdateCountryIdLabel.setText(Integer.toString(countryId));
+        List divisions = Division.getAllDivisionNamesByCountry(countryId);
 
-        stateProvinceBox.setItems(FXCollections.observableList(Division.getAllDivisionNamesByCountry(Integer.parseInt(addUpdateCountryIdLabel.getText()))));
-
+        stateProvinceBox.setItems(FXCollections.observableList(divisions));
     }
 
     public void setCustomer(Customer selectedCustomer) {

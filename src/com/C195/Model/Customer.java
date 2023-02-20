@@ -8,6 +8,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -99,10 +101,8 @@ public class Customer {
 
     public static int insertCustomer(int id, String name, String address, String postalCode, String phone, int divisionId, String user, String menu, int selectedCustomerId) throws SQLException {
 
-        //returns and array of current local, UTC, and eastern time, [0 = local, 1 = UTC, 2 = eastern]
-        Timestamp[] timestamps = DateTimeProcessing.zoneDateTimeToTimestamp();
-
-        Timestamp timestampUtc = timestamps[1];
+        Timestamp timestampLocal = Timestamp.valueOf(LocalDateTime.now());
+        Timestamp timestampUtc = DateTimeProcessing.exportTimeToUtc(timestampLocal);
 
         if (menu == "Add Customer") {
 

@@ -1,35 +1,11 @@
 package com.C195.helper;
 
 import java.sql.Timestamp;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
+import java.time.*;
+import java.time.format.DateTimeFormatter;
+import java.util.Locale;
 
 public class DateTimeProcessing {
-    ZonedDateTime dateTime;
-
-    public static Timestamp timestampProcessor(ZonedDateTime date) {
-        String[] dateStringSplit = date.toString().split("T");
-        String[] timeStringSplit = dateStringSplit[1].split("-");
-        if (timeStringSplit.length < 2) {
-            timeStringSplit = dateStringSplit[1].split("Z");
-        }
-        if (timeStringSplit.length < 2) {
-            timeStringSplit = dateStringSplit[1].split("\\+");
-        }
-        String timestampString = dateStringSplit[0] + " " + timeStringSplit[0];
-        Timestamp timestamp = Timestamp.valueOf(timestampString);
-        return timestamp;
-    }
-    public static Timestamp[] zoneDateTimeToTimestamp() {
-
-        ZonedDateTime instant = ZonedDateTime.now();
-        ZonedDateTime instantInUTC = instant.withZoneSameInstant(ZoneId.of("UTC"));
-        ZonedDateTime instantInEST = instant.withZoneSameInstant(ZoneId.of("America/New_York"));
-
-        Timestamp[] timestampArray = {timestampProcessor(instant),timestampProcessor(instantInUTC),timestampProcessor(instantInEST)};
-
-        return timestampArray;
-    }
 
     public static String[] splitDateTime(Timestamp timestamp) {
         String[] dateSplit = timestamp.toString().split(" ");
@@ -45,5 +21,32 @@ public class DateTimeProcessing {
         String[] dateOut = splitDate[0].split("-");
 
         return dateOut;
+    }
+
+    public static Timestamp importTimeToLocal(Timestamp timestamp) {
+
+        ZonedDateTime zoneFromLocal = timestamp.toLocalDateTime().atZone(ZoneId.of("UTC"));
+        ZonedDateTime dateTimeLocal = zoneFromLocal.withZoneSameInstant(ZoneId.systemDefault());
+        LocalDateTime timeStampLocal = dateTimeLocal.toLocalDateTime();
+
+        return Timestamp.valueOf(timeStampLocal);
+    }
+
+    public static Timestamp exportTimeToUtc(Timestamp timestamp) {
+
+        ZonedDateTime zoneFromLocal = timestamp.toLocalDateTime().atZone(ZoneId.systemDefault());
+        ZonedDateTime dateTimeUtc = zoneFromLocal.withZoneSameInstant(ZoneId.of("UTC"));
+        LocalDateTime timeStampUtc = dateTimeUtc.toLocalDateTime();
+
+        return Timestamp.valueOf(timeStampUtc);
+    }
+
+    public static Timestamp dateTimeToEST(Timestamp timestamp) {
+
+        ZonedDateTime zoneFromLocal = timestamp.toLocalDateTime().atZone(ZoneId.systemDefault());
+        ZonedDateTime dateTimeUtc = zoneFromLocal.withZoneSameInstant(ZoneId.of("US/Eastern"));
+        LocalDateTime timeStampUtc = dateTimeUtc.toLocalDateTime();
+
+        return Timestamp.valueOf(timeStampUtc);
     }
 }

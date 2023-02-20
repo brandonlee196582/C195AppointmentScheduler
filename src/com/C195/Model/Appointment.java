@@ -127,8 +127,16 @@ public class Appointment {
             while(contactRs.next()){
                 contactName = contactRs.getString("Contact_Name");
             }
-            Appointment.addApt(new Appointment(rs.getInt("Appointment_ID"),rs.getString("Title"),rs.getString("Description"),rs.getString("Location"),rs.getString("Type"),rs.getTimestamp("Start"),rs.getTimestamp("End"),rs.getTimestamp("Create_Date"),rs.getString("Created_By"),rs.getTimestamp("Last_Update"),rs.getString("Last_Updated_By"),rs.getInt("Customer_ID"),rs.getInt("User_ID"),contactId,contactName));
+            Timestamp start = DateTimeProcessing.importTimeToLocal(rs.getTimestamp("Start"));
+            Timestamp end = DateTimeProcessing.importTimeToLocal(rs.getTimestamp("End"));
+            Appointment.addApt(new Appointment(rs.getInt("Appointment_ID"),rs.getString("Title"),rs.getString("Description"),rs.getString("Location"),rs.getString("Type"),start,end,rs.getTimestamp("Create_Date"),rs.getString("Created_By"),rs.getTimestamp("Last_Update"),rs.getString("Last_Updated_By"),rs.getInt("Customer_ID"),rs.getInt("User_ID"),contactId,contactName));
         }
+    }
+
+    public static void remeoveApt(int id) throws SQLException {
+        String sql = "DELETE FROM client_schedule.appointments WHERE Appointment_ID=" + id;
+        PreparedStatement ps = connection.prepareStatement(sql);
+        ps.executeUpdate();
     }
 
     public static int insertApt(int aptId, String aptTitle, String aptDescription, String aptLocation, String aptType, Timestamp aptStartDateTime, Timestamp aptEndDateTime, Timestamp aptCreationDate, String aptCreatedBy, Timestamp aptLastUpdatedDate, String aptlastUpdatedBy, Integer customerId, Integer userId, Integer contactId) throws SQLException {
