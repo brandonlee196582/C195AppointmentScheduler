@@ -45,8 +45,16 @@ public class DateTimeProcessing {
 
         ZonedDateTime zoneFromLocal = timestamp.toLocalDateTime().atZone(ZoneId.systemDefault());
         ZonedDateTime dateTimeUtc = zoneFromLocal.withZoneSameInstant(ZoneId.of("US/Eastern"));
-        LocalDateTime timeStampUtc = dateTimeUtc.toLocalDateTime();
+        LocalDateTime timeStampEst = dateTimeUtc.toLocalDateTime();
 
-        return Timestamp.valueOf(timeStampUtc);
+        return Timestamp.valueOf(timeStampEst);
+    }
+
+    public static Timestamp stringToDateTime(String dateTimeString) {
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        LocalDateTime dateTime = LocalDateTime.parse(dateTimeString, formatter);
+
+        return Timestamp.valueOf(dateTime);
     }
 }

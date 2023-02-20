@@ -26,8 +26,8 @@ public class Contact {
     public int getContactId() {return contactId;}
     public String getContactName() {return contactName;}
     public String getContactEmail() {return contactEmail;}
-    public static List getAllContactNames() {
-        List contactNameList = new ArrayList();
+    public static ObservableList<String> getAllContactNames() {
+        ObservableList<String> contactNameList = FXCollections.observableArrayList();
         allContacts.forEach(object -> {
             contactNameList.add(object.getContactName());
         });
@@ -45,7 +45,7 @@ public class Contact {
         }
         return (int) id.get(0);
     }
-    public static String  getContactNameById(int contactId) {
+    public static String getContactNameById(int contactId) {
         List name = new ArrayList();
         allContacts.forEach(object -> {
             if (object.getContactId() == contactId) {

@@ -52,8 +52,8 @@ public class Customer {
     public String getDivisionName() {return  divisionName;}
     public String getCountryName() {return countryName;}
 
-    public static List getAllCustomerNames() {
-        List customerNameList = new ArrayList();
+    public static ObservableList<String> getAllCustomerNames() {
+        ObservableList<String> customerNameList = FXCollections.observableArrayList();
         allCustomers.forEach(object -> {
             customerNameList.add(object.getCustomerName());
         });

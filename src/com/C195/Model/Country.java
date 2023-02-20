@@ -37,15 +37,15 @@ public class Country {
     public String getCreatedBy() {return createdBy;}
     public  Date getLastUpdatedDate() {return lastUpdatedDate;}
     public String getLastUpdatedBy() {return  lastUpdatedBy;}
-    public static List getAllCountryNames() {
-        List countryNameList = new ArrayList();
+    public static ObservableList<String> getAllCountryNames() {
+        ObservableList<String> countryNameList = FXCollections.observableArrayList();
         allCountries.forEach(object -> {
             countryNameList.add(object.getCountryName());
         });
         return countryNameList;
     }
     public static int getCountryIdByName(String searchName) {
-        List id = new ArrayList();
+        List<Integer> id = new ArrayList();
         allCountries.forEach(object -> {
             if (object.getCountryName() == searchName) {
                 id.add(object.getCountryId());
@@ -54,7 +54,7 @@ public class Country {
         if (id.isEmpty()) {
             return 0;
         }
-        return (int) id.get(0);
+        return id.get(0);
     }
     public static String  getCountryNameById(int searchId) {
         List name = new ArrayList();

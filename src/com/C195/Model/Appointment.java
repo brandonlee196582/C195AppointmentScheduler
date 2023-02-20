@@ -9,6 +9,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Calendar;
 
 import static com.C195.helper.JDBC.connection;
@@ -139,8 +140,13 @@ public class Appointment {
         ps.executeUpdate();
     }
 
-    public static int insertApt(int aptId, String aptTitle, String aptDescription, String aptLocation, String aptType, Timestamp aptStartDateTime, Timestamp aptEndDateTime, Timestamp aptCreationDate, String aptCreatedBy, Timestamp aptLastUpdatedDate, String aptlastUpdatedBy, Integer customerId, Integer userId, Integer contactId) throws SQLException {
-        String sql = "INSERT INTO customers (Title, Description, Location, Type, Start, End, Create_Date, Created_By, Last_Update, Last_Updated_By, Customer_ID, User_ID, Contact_ID) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+    public static int insertApt(int aptId, String aptTitle, String aptDescription, String aptLocation, String aptType, Timestamp aptStartDateTime, Timestamp aptEndDateTime, String aptCreatedBy, String aptlastUpdatedBy, Integer customerId, Integer userId, Integer contactId) throws SQLException {
+        Timestamp aptCreationDate, aptLastUpdatedDate;
+
+        aptCreationDate = Timestamp.valueOf(LocalDateTime.now());
+        aptLastUpdatedDate = Timestamp.valueOf(LocalDateTime.now());
+
+        String sql = "INSERT INTO appointments (Title, Description, Location, Type, Start, End, Create_Date, Created_By, Last_Update, Last_Updated_By, Customer_ID, User_ID, Contact_ID) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         PreparedStatement ps = connection.prepareStatement(sql);
         ps.setString(1, aptTitle);
         ps.setString(2, aptDescription);

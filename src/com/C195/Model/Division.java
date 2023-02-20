@@ -41,8 +41,8 @@ public class Division {
     public String getLastUpdatedBy() {return  lastUpdatedBy;}
     public int getCountryId() {return  countryId;}
 
-    public static List getAllDivisionNames() {
-        List nameList = new ArrayList();
+    public static ObservableList<String> getAllDivisionNames() {
+        ObservableList<String> nameList = FXCollections.observableArrayList();
         allDivisions.forEach(object -> {
             nameList.add(object.getDivisionName());
         });
@@ -73,8 +73,8 @@ public class Division {
         return name.get(0).toString();
     }
 
-    public static List getAllDivisionNamesByCountry(int country) {
-        List nameList = new ArrayList();
+    public static ObservableList<String> getAllDivisionNamesByCountry(int country) {
+        ObservableList<String> nameList = FXCollections.observableArrayList();
         allDivisions.forEach(object -> {
             if (object.getCountryId() == country) {
                 nameList.add(object.getDivisionName());
