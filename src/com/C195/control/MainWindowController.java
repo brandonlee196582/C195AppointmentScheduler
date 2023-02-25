@@ -24,6 +24,7 @@ import static com.C195.helper.JDBC.connection;
 import static java.time.LocalDate.now;
 
 /**
+ *
  * @author brandonLackey
  */
 public class MainWindowController implements Initializable {
@@ -273,6 +274,22 @@ public class MainWindowController implements Initializable {
     //Main Window Functions
     //---------------------------------------
     //---------------------------------------
+
+    /**
+     *
+     */
+    public void aptStartDateFilter() {
+        int selectedTabIndex = aptFilterTabSelector.getSelectionModel().getSelectedIndex();
+        if (selectedTabIndex != 0) {
+            if (selectedTabIndex < 3) {
+                aptFilterTabSelector.getSelectionModel().select(3);
+                aptFilterTabSelector.getSelectionModel().select(selectedTabIndex);
+            } else {
+                aptFilterTabSelector.getSelectionModel().select(2);
+                aptFilterTabSelector.getSelectionModel().select(selectedTabIndex);
+            }
+        }
+    }
 
     /**
      *

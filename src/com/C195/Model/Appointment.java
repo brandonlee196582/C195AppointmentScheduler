@@ -12,7 +12,7 @@ import java.time.*;
 import static com.C195.helper.JDBC.connection;
 
 /**
- * Appointment Class is developed to track appointment datd imported from the appointment table in the client_schedule database
+ * Appointment Class is developed to track appointment data imported from the appointment table in the client_schedule database
  *
  * @author brandonLackey
  */

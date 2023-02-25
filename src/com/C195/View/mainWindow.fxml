@@ -67,7 +67,7 @@
                                                     </Tab>
                                                   </tabs>
                                                 </TabPane>
-                                                <DatePicker fx:id="aptStartDateFilter" disable="true" nodeOrientation="LEFT_TO_RIGHT" showWeekNumbers="true" style="-fx-background-radius: 0;" StackPane.alignment="TOP_CENTER">
+                                                <DatePicker fx:id="aptStartDateFilter" disable="true" nodeOrientation="LEFT_TO_RIGHT" onAction="#aptStartDateFilter" showWeekNumbers="true" style="-fx-background-radius: 0;" StackPane.alignment="TOP_CENTER">
                                                    <opaqueInsets>
                                                       <Insets />
                                                    </opaqueInsets>
