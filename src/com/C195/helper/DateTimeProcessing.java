@@ -3,10 +3,17 @@ package com.C195.helper;
 import java.sql.Timestamp;
 import java.time.*;
 import java.time.format.DateTimeFormatter;
-import java.util.Locale;
 
+/**
+ * @author brandonLackey
+ */
 public class DateTimeProcessing {
 
+    /**
+     *
+     * @param timestamp
+     * @return
+     */
     public static String[] splitDateTime(Timestamp timestamp) {
         String[] dateSplit = timestamp.toString().split(" ");
         String[] timeSplit = dateSplit[1].split(":");
@@ -15,6 +22,11 @@ public class DateTimeProcessing {
         return dateArray;
     }
 
+    /**
+     *
+     * @param timestamp
+     * @return
+     */
     public static String[] splitYearMonthDay(Timestamp timestamp) {
 
         String[] splitDate = splitDateTime(timestamp);
@@ -23,6 +35,11 @@ public class DateTimeProcessing {
         return dateOut;
     }
 
+    /**
+     *
+     * @param timestamp
+     * @return
+     */
     public static Timestamp importTimeToLocal(Timestamp timestamp) {
 
         ZonedDateTime zoneFromLocal = timestamp.toLocalDateTime().atZone(ZoneId.of("UTC"));
@@ -32,6 +49,11 @@ public class DateTimeProcessing {
         return Timestamp.valueOf(timeStampLocal);
     }
 
+    /**
+     *
+     * @param timestamp
+     * @return
+     */
     public static Timestamp exportTimeToUtc(Timestamp timestamp) {
 
         ZonedDateTime zoneFromLocal = timestamp.toLocalDateTime().atZone(ZoneId.systemDefault());
@@ -41,6 +63,11 @@ public class DateTimeProcessing {
         return Timestamp.valueOf(timeStampUtc);
     }
 
+    /**
+     *
+     * @param timestamp
+     * @return
+     */
     public static Timestamp dateTimeToEST(Timestamp timestamp) {
 
         ZonedDateTime zoneFromLocal = timestamp.toLocalDateTime().atZone(ZoneId.systemDefault());
@@ -50,6 +77,11 @@ public class DateTimeProcessing {
         return Timestamp.valueOf(timeStampEst);
     }
 
+    /**
+     *
+     * @param dateTimeString
+     * @return
+     */
     public static Timestamp stringToDateTime(String dateTimeString) {
 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
@@ -57,4 +89,33 @@ public class DateTimeProcessing {
 
         return Timestamp.valueOf(dateTime);
     }
+
+    /**
+     *
+     * @param timestamp
+     * @return
+     */
+    public static long timestampToEpoch(Timestamp timestamp) {
+
+        Instant timestampInstant = timestamp.toInstant();
+        long timestampEpoch = timestampInstant.getEpochSecond();
+
+        return timestampEpoch;
+    }
+
+    /**
+     *
+     * @param timestampArr
+     * @return
+     */
+    public static long[] timestampArrToEpoch(Timestamp[] timestampArr) {
+        long[] epochArr = new long[timestampArr.length];
+
+        for (int i = 0; i < timestampArr.length; i++) {
+            epochArr[i] = timestampToEpoch(timestampArr[i]);
+        }
+
+        return epochArr;
+    }
+
 }

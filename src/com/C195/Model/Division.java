@@ -2,16 +2,17 @@ package com.C195.Model;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-
 import static com.C195.helper.JDBC.connection;
 
+/**
+ * @author brandonLackey
+ */
 public class Division {
     int divisionId;
     String divisionName;
@@ -20,8 +21,18 @@ public class Division {
     Date lastUpdatedDate;
     String lastUpdatedBy;
     int countryId;
-    private static ObservableList<Division> allDivisions = FXCollections.observableArrayList();
+    private static final ObservableList<Division> allDivisions = FXCollections.observableArrayList();
 
+    /**
+     *
+     * @param divisionId
+     * @param divisionName
+     * @param creationDate
+     * @param createdBy
+     * @param lastUpdatedDate
+     * @param lastUpdatedBy
+     * @param countryId
+     */
     private Division(int divisionId, String divisionName, Date creationDate, String createdBy, Date lastUpdatedDate, String lastUpdatedBy, int countryId) {
         this.divisionId = divisionId;
         this.divisionName = divisionName;
@@ -31,37 +42,96 @@ public class Division {
         this.lastUpdatedBy = lastUpdatedBy;
         this.countryId = countryId;
     }
+
+    /**
+     *
+     * @return
+     */
     public static ObservableList<Division> getAllDivisions() {return allDivisions;}
+
+    /**
+     *
+     * @param newDivision
+     */
     public static void addDivision(Division newDivision) {allDivisions.add(newDivision);}
+
+    /**
+     *
+     * @return
+     */
     public int getDivisionId() {return divisionId;}
+
+    /**
+     *
+     * @return
+     */
     public String getDivisionName() {return divisionName;}
+
+    /**
+     *
+     * @return
+     */
     public Date getCreationDate() {return creationDate;}
+
+    /**
+     *
+     * @return
+     */
     public String getCreatedBy() {return createdBy;}
+
+    /**
+     *
+     * @return
+     */
     public  Date getLastUpdatedDate() {return lastUpdatedDate;}
+
+    /**
+     *
+     * @return
+     */
     public String getLastUpdatedBy() {return  lastUpdatedBy;}
+
+    /**
+     *
+     * @return
+     */
     public int getCountryId() {return  countryId;}
 
+    /**
+     *
+     * @return
+     */
     public static ObservableList<String> getAllDivisionNames() {
         ObservableList<String> nameList = FXCollections.observableArrayList();
-        allDivisions.forEach(object -> {
-            nameList.add(object.getDivisionName());
-        });
+        allDivisions.forEach(object -> nameList.add(object.getDivisionName()));
         return nameList;
     }
+
+    /**
+     *
+     * @param searchName
+     * @return
+     */
     public static int getDivisionIdByName(String searchName) {
-        List id = new ArrayList();
+        List<Integer> id = new ArrayList<>();
         allDivisions.forEach(object -> {
-            if (object.getDivisionName() == searchName) {
+            if (object.getDivisionName().equals(searchName)) {
                 id.add(object.getDivisionId());
             }
         });
         if (id.isEmpty()) {
             return 0;
         }
-        return (int) id.get(0);
+        return id.get(0);
     }
+
+    /**
+     *
+     * @param searchId
+     * @return
+     */
     public static String  getDivisionNameById(int searchId) {
-        List name = new ArrayList();
+        List<String> name = new ArrayList<>();
         allDivisions.forEach(object -> {
             if (object.getDivisionId() == searchId) {
                 name.add(object.getDivisionName());
@@ -70,9 +140,14 @@ public class Division {
         if (name.isEmpty()) {
             return "unknown";
         }
-        return name.get(0).toString();
+        return name.get(0);
     }
 
+    /**
+     *
+     * @param country
+     * @return
+     */
     public static ObservableList<String> getAllDivisionNamesByCountry(int country) {
         ObservableList<String> nameList = FXCollections.observableArrayList();
         allDivisions.forEach(object -> {
@@ -83,8 +158,13 @@ public class Division {
         return nameList;
     }
 
+    /**
+     *
+     * @param searchId
+     * @return
+     */
     public static int  getCountryIdByDivisionId(int searchId) {
-        List id = new ArrayList();
+        List<Integer> id = new ArrayList<>();
         allDivisions.forEach(object -> {
             if (object.getDivisionId() == searchId) {
                 id.add(object.getCountryId());
@@ -93,9 +173,13 @@ public class Division {
         if (id.isEmpty()) {
             return 0;
         }
-        return (int) id.get(0);
+        return id.get(0);
     }
 
+    /**
+     *
+     * @throws SQLException
+     */
     public static void getDatabaseDivisions() throws SQLException {
         String sql;
 

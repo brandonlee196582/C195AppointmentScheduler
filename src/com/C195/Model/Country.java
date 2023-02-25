@@ -2,16 +2,17 @@ package com.C195.Model;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-
 import static com.C195.helper.JDBC.connection;
 
+/**
+ * @author brandonLackey
+ */
 public class Country {
     int countryId;
     String countryName;
@@ -19,8 +20,17 @@ public class Country {
     String createdBy;
     Date lastUpdatedDate;
     String lastUpdatedBy;
-    private static ObservableList<Country> allCountries = FXCollections.observableArrayList();
+    private static final ObservableList<Country> allCountries = FXCollections.observableArrayList();
 
+    /**
+     *
+     * @param countryId
+     * @param countryName
+     * @param creationDate
+     * @param createdBy
+     * @param lastUpdatedDate
+     * @param lastUpdatedBy
+     */
     private Country(int countryId, String countryName, Date creationDate, String createdBy, Date lastUpdatedDate, String lastUpdatedBy) {
         this.countryId = countryId;
         this.countryName = countryName;
@@ -29,25 +39,74 @@ public class Country {
         this.lastUpdatedDate = lastUpdatedDate;
         this.lastUpdatedBy = lastUpdatedBy;
     }
+
+    /**
+     *
+     * @return
+     */
     public static ObservableList<Country> getAllCountries() {return allCountries;}
+
+    /**
+     *
+     * @param newCountry
+     */
     public static void addCountry(Country newCountry) {allCountries.add(newCountry);}
+
+    /**
+     *
+     * @return
+     */
     public int getCountryId() {return countryId;}
+
+    /**
+     *
+     * @return
+     */
     public String getCountryName() {return countryName;}
+
+    /**
+     *
+     * @return
+     */
     public Date getCreationDate() {return creationDate;}
+
+    /**
+     *
+     * @return
+     */
     public String getCreatedBy() {return createdBy;}
+
+    /**
+     *
+     * @return
+     */
     public  Date getLastUpdatedDate() {return lastUpdatedDate;}
+
+    /**
+     *
+     * @return
+     */
     public String getLastUpdatedBy() {return  lastUpdatedBy;}
+
+    /**
+     *
+     * @return
+     */
     public static ObservableList<String> getAllCountryNames() {
         ObservableList<String> countryNameList = FXCollections.observableArrayList();
-        allCountries.forEach(object -> {
-            countryNameList.add(object.getCountryName());
-        });
+        allCountries.forEach(object -> countryNameList.add(object.getCountryName()));
         return countryNameList;
     }
+
+    /**
+     *
+     * @param searchName
+     * @return
+     */
     public static int getCountryIdByName(String searchName) {
-        List<Integer> id = new ArrayList();
+        List<Integer> id = new ArrayList<>();
         allCountries.forEach(object -> {
-            if (object.getCountryName() == searchName) {
+            if (object.getCountryName().equals(searchName)) {
                 id.add(object.getCountryId());
             }
         });
@@ -56,8 +115,14 @@ public class Country {
         }
         return id.get(0);
     }
+
+    /**
+     *
+     * @param searchId
+     * @return
+     */
     public static String  getCountryNameById(int searchId) {
-        List name = new ArrayList();
+        List<String> name = new ArrayList<>();
         allCountries.forEach(object -> {
             if (object.getCountryId() == searchId) {
                 name.add(object.getCountryName());
@@ -66,9 +131,13 @@ public class Country {
         if (name.isEmpty()) {
             return "unknown";
         }
-        return name.get(0).toString();
+        return name.get(0);
     }
 
+    /**
+     *
+     * @throws SQLException
+     */
     public static void getDatabaseCountries() throws SQLException {
         String sql;
 

@@ -7,9 +7,16 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 import java.sql.SQLException;
 
-
+/**
+ * @author brandonLackey
+ */
 public class Main extends Application{
 
+    /**
+     *
+     * @param primaryStage
+     * @throws Exception
+     */
     @Override
     public void start(Stage primaryStage) throws Exception {
         Parent root = FXMLLoader.load(getClass().getResource("View/mainWindow.fxml"));
@@ -20,6 +27,11 @@ public class Main extends Application{
         primaryStage.show();
     }
 
+    /**
+     *
+     * @param args
+     * @throws SQLException
+     */
     public static void main(String[] args) throws SQLException {
         launch(args);
     }
